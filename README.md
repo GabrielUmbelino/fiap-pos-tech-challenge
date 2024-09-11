@@ -1,2 +1,4 @@
-# fiap-pos-tech-challenge
-fiap-pos-tech-challenge
+# Fiap-pos-tech-challenge - Fase 1
+Turma 9SOAT Grupo 66
+
+Integrantes: 
