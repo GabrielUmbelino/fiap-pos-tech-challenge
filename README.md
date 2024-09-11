@@ -1,4 +1,4 @@
-# Fiap-pos-tech-challenge - Fase 1
+# FIAP-PÓS-TECH-CHALLENGE - Fase 1
 Turma 9SOAT Grupo 66
 
 Integrantes: 
