@@ -76,7 +76,7 @@ A implementação deste sistema visa resolver problemas comuns em lanchonetes em
 
 > TODO: Adicionar a estrutura do projeto
 
-## Instalação do projeto<a id="ancoraInstalacao"></a>
+## Instalação do projeto
 
 Este projeto deve ser executado em um ambiente Docker, dispensando qualquer instalação adicional.
 Se você não possui o Docker instalado, siga as instruções para seu sistema operacional na [documentação oficial do Docker](https://docs.docker.com/get-docker).
@@ -84,7 +84,7 @@ Se você não possui o Docker instalado, siga as instruções para seu sistema o
 > TODO: Adicionar instruções Docker
 
 
-## Desenvolvimento<a id="ancoraDesenvolvimento"></a>
+## Desenvolvimento
 
 Deseja abrir o código na IDE? Segue o fio.
 
@@ -92,7 +92,7 @@ Deseja abrir o código na IDE? Segue o fio.
 
 ## Execução via Postman
 
-Se você já fez um dos passos anteriores ([Instalação do projeto](#ancoraInstalacao) ou [Desenvolvimento](#ancoraDesenvolvimento)), você pode importar a coleção em JSON do Postman com todos endpoints já configurados e realizar os testes diretamente na API.
+Se você já fez um dos passos anteriores ([Instalação do projeto](#instalação-do-projeto) ou [Desenvolvimento](#desenvolvimento)), você pode importar a coleção em JSON do Postman com todos endpoints já configurados e realizar os testes diretamente na API.
 Se você não possui o Postman instalado, siga as instruções para seu sistema operacional na [documentação oficial Postman](https://learning.postman.com/docs/getting-started/installation/installation-and-updates/).
 
 > TODO: Adicionar coleção Postman e adicionar o link a esta seção.
