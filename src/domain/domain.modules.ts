@@ -5,7 +5,7 @@ import { CustomerInMemory } from './adapters/driven/customerInMemory';
 import { CustomerController } from './adapters/driving/customerController';
 
 @Module({
-  // imports: [Logger],
+  imports: [],
   controllers: [CustomerController],
   providers: [
     CustomerService,
