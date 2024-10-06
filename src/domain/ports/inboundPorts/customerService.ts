@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Customer } from '../model/customer';
+import { Customer, CustomerDto, FilterCustomerDto } from '../model/customer';
 import { ICustomerService } from './iCustomerService';
 import { ICustomerRepository } from '../outboundPorts/ICustomerRepository';
 
@@ -10,14 +10,15 @@ export class CustomerService implements ICustomerService {
     private readonly customerRepository: ICustomerRepository,
   ) {}
 
-  create(name: string): Customer {
-    const customer = new Customer(name);
-
-    this.customerRepository.create(customer);
-    return customer;
+  create(customerDto: CustomerDto): Promise<Customer> {
+    return this.customerRepository.create(customerDto);
   }
 
-  findAll(): Customer[] {
+  findAll(): Promise<Customer[]> {
     return this.customerRepository.findAll();
+  }
+
+  find(filterCustomerDto: FilterCustomerDto): Promise<Customer[]> {
+    return this.customerRepository.find(filterCustomerDto);
   }
 }

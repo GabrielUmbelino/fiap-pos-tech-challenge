@@ -1,10 +1,12 @@
-import { Customer } from '../model/customer';
+import { FilterCustomerDto } from './../model/customer';
+import { Customer, CustomerDto } from '../model/customer';
 
 /**
  * Our domain input port
  */
 
 export interface ICustomerService {
-  create(name: string): Customer;
-  findAll(): Customer[];
+  create(customerDto: CustomerDto): Promise<Customer>;
+  findAll(): Promise<Customer[]>;
+  find(filterCustomerDto: FilterCustomerDto): Promise<Customer[]>;
 }
