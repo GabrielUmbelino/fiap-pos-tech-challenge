@@ -9,7 +9,7 @@ import { IProductRepository } from './ports/outboundPorts/IProductRepository';
 import { ProductInMemory } from './adapters/driven/productInMemory';
 
 @Module({
-  // imports: [Logger],
+  imports: [],
   controllers: [CustomerController, ProductController],
   providers: [
     CustomerService,
