@@ -1,6 +1,6 @@
 import { CustomerDto } from '../model/customer';
 import { CustomerService } from './customerService';
-import { MockCustomerService } from './mockCustomerService';
+import { MockCustomerRepository } from '../../adapters/driven/mockCustomerRepository';
 
 const customerDto: CustomerDto = {
   name: 'John Doe',
@@ -10,11 +10,11 @@ const customerDto: CustomerDto = {
 
 describe('Customer Service', () => {
   let customerService: CustomerService;
-  let mockCustomerService: MockCustomerService;
+  let mockCustomerRepository: MockCustomerRepository;
 
   beforeEach(async () => {
-    mockCustomerService = new MockCustomerService();
-    customerService = new CustomerService(mockCustomerService);
+    mockCustomerRepository = new MockCustomerRepository();
+    customerService = new CustomerService(mockCustomerRepository);
   });
 
   it('should create a customer', async () => {

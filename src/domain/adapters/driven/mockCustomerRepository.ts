@@ -1,7 +1,7 @@
-import { Customer, CustomerDto } from '../model/customer';
-import { ICustomerRepository } from '../outboundPorts/ICustomerRepository';
+import { Customer, CustomerDto } from '../../ports/model/customer';
+import { ICustomerRepository } from '../../ports/outboundPorts/ICustomerRepository';
 
-export class MockCustomerService implements ICustomerRepository {
+export class MockCustomerRepository implements ICustomerRepository {
   private readonly customers: Customer[] = [];
 
   async create(customerDto: CustomerDto): Promise<Customer> {
