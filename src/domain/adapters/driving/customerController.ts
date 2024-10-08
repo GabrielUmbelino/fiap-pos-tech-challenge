@@ -1,13 +1,5 @@
 import { FilterCustomerDto } from './../../ports/model/customer';
-import {
-  Body,
-  Controller,
-  Get,
-  Logger,
-  Post,
-  Query,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Query } from '@nestjs/common';
 import { CustomerService } from '../../ports/inboundPorts/customerService';
 import { Customer, CustomerDto } from '../../ports/model/customer';
 import { ApiQuery } from '@nestjs/swagger';
@@ -23,26 +15,25 @@ export class CustomerController {
   }
 
   @ApiQuery({
-    name: "id",
+    name: 'id',
     type: String,
-    required: false
+    required: false,
   })
   @ApiQuery({
-    name: "name",
+    name: 'name',
     type: String,
-    required: false
+    required: false,
   })
   @ApiQuery({
-    name: "document",
+    name: 'document',
     type: String,
-    required: false
+    required: false,
   })
   @ApiQuery({
-    name: "phoneNumber",
+    name: 'phoneNumber',
     type: String,
-    required: false
+    required: false,
   })
-
   @Get(':params')
   find(
     @Query('id') id?: string,
@@ -50,7 +41,6 @@ export class CustomerController {
     @Query('document') document?: string,
     @Query('phoneNumber') phoneNumber?: string,
   ): Promise<Customer[]> {
-
     const filterCustomerDto: FilterCustomerDto = {
       id,
       name,
