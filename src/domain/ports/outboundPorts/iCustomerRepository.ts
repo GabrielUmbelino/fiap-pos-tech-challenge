@@ -1,8 +1,9 @@
-import { Customer } from '../model/customer';
+import { Customer, CustomerDto, FilterCustomerDto } from '../model/customer';
 
 export interface ICustomerRepository {
-  create(customer: Customer): Customer;
-  findAll(): Customer[];
+  create(customerDto: CustomerDto): Promise<Customer>;
+  findAll(): Promise<Customer[]>;
+  find(filterCustomerDto: FilterCustomerDto): Promise<Customer[]>;
 }
 
 export const ICustomerRepository = Symbol('ICustomerRepository');
