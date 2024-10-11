@@ -26,6 +26,7 @@
     "@nestjs/swagger": "^7.4.2",
     "class-validator": "^0.14.1",
     "crypto": "^1.0.1",
+    "fiap-pos-tech-challenge": "file:",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },

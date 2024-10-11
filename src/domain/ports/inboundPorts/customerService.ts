@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Customer, CustomerDto, FilterCustomerDto } from '../model/customer';
 import { ICustomerService } from './iCustomerService';
 import { ICustomerRepository } from '../outboundPorts/ICustomerRepository';
-
 @Injectable()
 export class CustomerService implements ICustomerService {
   constructor(
