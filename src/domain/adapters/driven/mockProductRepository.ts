@@ -1,26 +1,20 @@
-import { FilterProductDto } from './../../ports/model/product';
-import { Injectable } from '@nestjs/common';
-import { IProductRepository } from '../../ports/outboundPorts/IProductRepository';
 import { Product, ProductDto } from '../../ports/model/product';
+import { IProductRepository } from '../../ports/outboundPorts/iProductRepository';
 
-/**
- * This is the implementation of output port, to store things in memory.
- */
-@Injectable()
-export class ProductInMemory implements IProductRepository {
+export class MockProductRepository implements IProductRepository {
   private readonly products: Product[] = [];
 
-  create(productDto: ProductDto): Promise<Product> {
-    const product = new Product(productDto);
-    this.products.push(product);
-    return Promise.resolve(product);
+  async create(productDto: ProductDto): Promise<Product> {
+    const createdProduct = new Product(productDto);
+    this.products.push(createdProduct);
+    return Promise.resolve(createdProduct);
   }
 
-  findAll(): Promise<Product[]> {
+  async findAll(): Promise<Product[]> {
     return Promise.resolve(this.products);
   }
 
-  find(filterProductDto: FilterProductDto): Promise<Product[]> {
+  async find(filterProductDto: ProductDto): Promise<Product[]> {
     const filteredProducts = this.products.filter((product) => {
       if (filterProductDto.id && product.id === filterProductDto.id)
         return true;
@@ -33,6 +27,7 @@ export class ProductInMemory implements IProductRepository {
         return true;
       return false;
     });
+
     return Promise.resolve(filteredProducts);
   }
 
