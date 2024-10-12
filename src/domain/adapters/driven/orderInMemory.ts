@@ -23,11 +23,9 @@ export class OrderInMemory implements IOrderRepository {
   find(filterOrderDto: FilterOrderDto): Promise<Order[]> {
     const filteredOrders = this.orders.filter((order) => {
       if (filterOrderDto.id && order.id === filterOrderDto.id) return true;
-      if (filterOrderDto.name && order.name === filterOrderDto.name)
-        return true;
       if (
-        filterOrderDto.unitValue !== undefined &&
-        order.unitValue === filterOrderDto.unitValue
+        filterOrderDto.customerName &&
+        order.customerName === filterOrderDto.customerName
       )
         return true;
       return false;

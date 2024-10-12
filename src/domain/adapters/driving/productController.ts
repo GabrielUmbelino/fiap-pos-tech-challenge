@@ -13,6 +13,7 @@ import {
 import { ProductService } from '../../ports/inboundPorts/productService';
 import { Product, ProductDto } from '../../ports/model/product';
 import { ApiQuery } from '@nestjs/swagger';
+import { Category } from 'src/domain/ports/model/category';
 
 @Controller('product')
 export class ProductController {
@@ -30,7 +31,7 @@ export class ProductController {
     required: false,
   })
   @ApiQuery({
-    name: 'name',
+    name: 'productName',
     type: String,
     required: false,
   })
@@ -39,16 +40,23 @@ export class ProductController {
     type: Number,
     required: false,
   })
+  @ApiQuery({
+    name: 'productCategory',
+    type: Category,
+    required: false,
+  })
   @Get(':params')
   find(
     @Query('id') id?: string,
-    @Query('name') name?: string,
+    @Query('name') productName?: string,
     @Query('unitValue') unitValue?: number,
+    @Query('productCategory') productCategory?: Category,
   ): Promise<Product[]> {
     const filterProductDto: FilterProductDto = {
       id,
-      name,
+      productName,
       unitValue,
+      productCategory,
     };
 
     return this.productService.find(filterProductDto);

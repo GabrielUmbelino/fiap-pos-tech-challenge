@@ -1,32 +1,39 @@
 import { randomUUID } from 'crypto';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsArray } from 'class-validator';
+import { Product } from './product';
 
 export class OrderDto {
   @IsOptional()
   id?: string;
+
   @IsNotEmpty()
-  name?: string;
-  @IsNotEmpty()
-  unitValue?: number;
+  customerName: string;
+
+  @IsOptional()
+  @IsArray()
+  productsOrder?: Array<Product>;
 }
 
 export class FilterOrderDto {
   @IsOptional()
   id?: string;
+
+  @IsNotEmpty()
+  customerName: string;
+
   @IsOptional()
-  name?: string;
-  @IsOptional()
-  unitValue?: number;
+  @IsArray()
+  productsOrder?: Array<Product>;
 }
 
 export class Order {
   id: string;
-  name: string;
-  unitValue: number;
+  customerName: string;
+  productsOrder?: Array<Product>;
 
   constructor(orderDto: OrderDto) {
     this.id = orderDto?.id || randomUUID();
-    this.name = orderDto.name;
-    this.unitValue = orderDto.unitValue;
+    this.customerName = orderDto.customerName;
+    this.productsOrder = orderDto.productsOrder;
   }
 }

@@ -24,11 +24,9 @@ export class CategoryInMemory implements ICategoryRepository {
     const filteredCategories = this.categories.filter((category) => {
       if (filterCategoryDto.id && category.id === filterCategoryDto.id)
         return true;
-      if (filterCategoryDto.name && category.name === filterCategoryDto.name)
-        return true;
       if (
-        filterCategoryDto.unitValue !== undefined &&
-        category.unitValue === filterCategoryDto.unitValue
+        filterCategoryDto.categoryName &&
+        category.categoryName === filterCategoryDto.categoryName
       )
         return true;
       return false;

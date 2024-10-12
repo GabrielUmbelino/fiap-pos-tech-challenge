@@ -5,28 +5,22 @@ export class CategoryDto {
   @IsOptional()
   id?: string;
   @IsNotEmpty()
-  name?: string;
-  @IsNotEmpty()
-  unitValue?: number;
+  categoryName?: string;
 }
 
 export class FilterCategoryDto {
   @IsOptional()
   id?: string;
-  @IsOptional()
-  name?: string;
-  @IsOptional()
-  unitValue?: number;
+  @IsNotEmpty()
+  categoryName?: string;
 }
 
 export class Category {
   id: string;
-  name: string;
-  unitValue: number;
+  categoryName: string;
 
   constructor(categoryDto: CategoryDto) {
     this.id = categoryDto?.id || randomUUID();
-    this.name = categoryDto.name;
-    this.unitValue = categoryDto.unitValue;
+    this.categoryName = categoryDto.categoryName;
   }
 }

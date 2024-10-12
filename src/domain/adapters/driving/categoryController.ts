@@ -30,25 +30,18 @@ export class CategoryController {
     required: false,
   })
   @ApiQuery({
-    name: 'name',
+    name: 'categoryName',
     type: String,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'unitValue',
-    type: Number,
     required: false,
   })
   @Get(':params')
   find(
     @Query('id') id?: string,
-    @Query('name') name?: string,
-    @Query('unitValue') unitValue?: number,
+    @Query('categoryName') categoryName?: string,
   ): Promise<Category[]> {
     const filterCategoryDto: FilterCategoryDto = {
       id,
-      name,
-      unitValue,
+      categoryName,
     };
 
     return this.categoryService.find(filterCategoryDto);
