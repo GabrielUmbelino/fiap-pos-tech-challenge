@@ -1,5 +1,5 @@
 import { Product, ProductDto } from '../../ports/model/product';
-import { IProductRepository } from '../../ports/outboundPorts/iProductRepository';
+import { IProductRepository } from '../../ports/outboundPorts/IProductRepository';
 
 export class MockProductRepository implements IProductRepository {
   private readonly products: Product[] = [];
