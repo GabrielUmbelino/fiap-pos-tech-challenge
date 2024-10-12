@@ -1,19 +1,20 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { MemoryDatabaseModule } from './memory-database.module';
+// import { MemoryDatabaseModule } from './memory-database.module';
+import { TypeormDatabaseModule } from './typeorm-database.module';
 
 @Module({})
 export class RepositoryModule {
   static forFeature(): DynamicModule {
-    // if (process.env.NODE_ENV === 'use-memory-repository') {
-    return {
-      module: MemoryDatabaseModule,
-      exports: [MemoryDatabaseModule],
-    };
+    // if (process.env.NODE_ENV === 'USE-MEMORY-REPOSITORY') {
+    //   return {
+    //     module: MemoryDatabaseModule,
+    //     exports: [MemoryDatabaseModule],
+    //   };
     // } else {
-    // return {
-    // module: TypeormDatabaseModule,
-    // exports: [TypeormDatabaseModule],
-    // };
+    return {
+      module: TypeormDatabaseModule,
+      exports: [TypeormDatabaseModule],
+    };
     // }
   }
 }

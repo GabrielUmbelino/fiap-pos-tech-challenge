@@ -42,7 +42,7 @@ export class ProductController {
     required: false,
   })
   @ApiQuery({
-    name: 'unitValue',
+    name: 'price',
     type: Number,
     required: false,
   })
@@ -50,12 +50,12 @@ export class ProductController {
   find(
     @Query('id') id?: number,
     @Query('name') name?: string,
-    @Query('unitValue') unitValue?: number,
+    @Query('price') price?: number,
   ): Promise<Product[]> {
     const filterProductDto: FilterProductDto = {
       id,
       name,
-      unitValue,
+      price,
     };
 
     return this.productService.find(filterProductDto);

@@ -22,8 +22,8 @@ export class ProductInMemoryRepository implements IRepository<Product> {
       if (filterProductDto.name && product.name === filterProductDto.name)
         return true;
       if (
-        filterProductDto.unitValue !== undefined &&
-        product.unitValue === filterProductDto.unitValue
+        filterProductDto.price !== undefined &&
+        product.price === filterProductDto.price
       )
         return true;
       return false;

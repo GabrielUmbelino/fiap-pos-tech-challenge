@@ -1,37 +1,66 @@
 import { Injectable } from '@nestjs/common';
 import { Customer, FilterCustomerDto } from '../../../shared/models/customer';
 import { IRepository } from '../iRepository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CustomerEntity } from './customer.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CustomerInDbRepository implements IRepository<Customer> {
-  private readonly customers: Customer[] = [];
+  constructor(
+    @InjectRepository(CustomerEntity)
+    private repository: Repository<CustomerEntity>,
+  ) {}
 
   create(customer: Customer): Promise<Customer> {
-    this.customers.push(customer);
-    return Promise.resolve(customer);
+    return this.repository
+      .save({
+        name: customer.name,
+        document: customer.document,
+        phoneNumber: customer.phoneNumber,
+      })
+      .then((customerEntity) => {
+        return {
+          id: customerEntity.id,
+          name: customerEntity.name,
+          document: customerEntity.document,
+          phoneNumber: customerEntity.phoneNumber,
+        };
+      })
+      .catch((error) => {
+        throw new Error(
+          `An error occurred while saving the customer to the database: '${JSON.stringify(customer)}': ${error.message}`,
+        );
+      });
   }
 
   findAll(): Promise<Customer[]> {
-    return Promise.resolve(this.customers);
+    throw new Error('Method not implemented.');
   }
 
   find(customerDto: FilterCustomerDto): Promise<Customer[]> {
-    const filteredCustomers = this.customers?.filter((customer) => {
-      if (customer.id === customerDto.id) return true;
-      if (customer.name === customerDto.name) return true;
-      if (customer.document === customerDto.document) return true;
-      if (customer.phoneNumber === customerDto.phoneNumber) return true;
-
-      return;
-    });
-    return Promise.resolve(filteredCustomers);
+    return this.repository
+      .findBy(customerDto)
+      .then((customerEntities) => {
+        return customerEntities.map((customerEntity) => ({
+          id: customerEntity.id,
+          name: customerEntity.name,
+          document: customerEntity.document,
+          phoneNumber: customerEntity.phoneNumber,
+        }));
+      })
+      .catch((error) => {
+        throw new Error(
+          `An error occurred while searching the customer in the database: '${JSON.stringify(customerDto)}': ${error.message}`,
+        );
+      });
   }
 
   delete(): Promise<void> {
-    throw new Error('Método não implementado.');
+    throw new Error('Method not implemented.');
   }
 
   edit(): Promise<Customer> {
-    throw new Error('Método não implementado.');
+    throw new Error('Method not implemented.');
   }
 }

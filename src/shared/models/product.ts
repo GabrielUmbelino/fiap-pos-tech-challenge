@@ -7,7 +7,7 @@ export class ProductDto {
   @IsNotEmpty()
   name?: string;
   @IsNotEmpty()
-  unitValue?: number;
+  price?: number;
 }
 
 export class FilterProductDto {
@@ -16,17 +16,17 @@ export class FilterProductDto {
   @IsOptional()
   name?: string;
   @IsOptional()
-  unitValue?: number;
+  price?: number;
 }
 
 export class Product {
   id?: number;
   name: string;
-  unitValue: number;
+  price: number;
 
   constructor(productDto: ProductDto) {
     this.id = productDto?.id || randomInt(999);
     this.name = productDto.name;
-    this.unitValue = productDto.unitValue;
+    this.price = productDto.price;
   }
 }
