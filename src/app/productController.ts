@@ -1,23 +1,30 @@
-import { FilterProductDto } from './../../ports/model/product';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  Inject,
   Logger,
   Param,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
-import { ProductService } from '../../ports/inboundPorts/productService';
-import { Product, ProductDto } from '../../ports/model/product';
+
 import { ApiQuery } from '@nestjs/swagger';
+import {
+  FilterProductDto,
+  Product,
+  ProductDto,
+} from '../shared/models/product';
+import { IService } from '../domain/iService';
 
 @Controller('product')
 export class ProductController {
   private readonly logger = new Logger(ProductController.name);
-  constructor(private productService: ProductService) {}
+  constructor(
+    @Inject('IService<Product>') private productService: IService<Product>,
+  ) {}
 
   @Get()
   findAll(): Promise<Product[]> {
@@ -26,7 +33,7 @@ export class ProductController {
 
   @ApiQuery({
     name: 'id',
-    type: String,
+    type: Number,
     required: false,
   })
   @ApiQuery({
@@ -41,7 +48,7 @@ export class ProductController {
   })
   @Get(':params')
   find(
-    @Query('id') id?: string,
+    @Query('id') id?: number,
     @Query('name') name?: string,
     @Query('unitValue') unitValue?: number,
   ): Promise<Product[]> {
@@ -56,25 +63,28 @@ export class ProductController {
 
   @Post()
   async create(@Body() productDto: ProductDto): Promise<Product> {
-    const product = await this.productService.create(productDto);
+    const product = await this.productService.create(productDto as Product);
     this.logger.debug(productDto);
     this.logger.debug({ product });
     return product;
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: string,
+  async edit(
+    @Param('id') id: number,
     @Body() productDto: ProductDto,
   ): Promise<Product> {
-    const updatedProduct = await this.productService.update(id, productDto);
+    const updatedProduct = await this.productService.edit({
+      ...productDto,
+      id,
+    } as Product);
     this.logger.debug(`Updated product: ${JSON.stringify(updatedProduct)}`);
     return updatedProduct;
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    await this.productService.remove(id);
+  async delete(@Param('id') id: number): Promise<void> {
+    await this.productService.delete(id);
     this.logger.debug(`Deleted product with id: ${id}`);
   }
 }

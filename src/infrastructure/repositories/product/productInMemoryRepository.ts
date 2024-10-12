@@ -1,17 +1,12 @@
-import { FilterProductDto } from './../../ports/model/product';
 import { Injectable } from '@nestjs/common';
-import { IProductRepository } from '../../ports/outboundPorts/IProductRepository';
-import { Product, ProductDto } from '../../ports/model/product';
+import { FilterProductDto, Product } from '../../../shared/models/product';
+import { IRepository } from '../iRepository';
 
-/**
- * This is the implementation of output port, to store things in memory.
- */
 @Injectable()
-export class ProductInMemory implements IProductRepository {
+export class ProductInMemoryRepository implements IRepository<Product> {
   private readonly products: Product[] = [];
 
-  create(productDto: ProductDto): Promise<Product> {
-    const product = new Product(productDto);
+  create(product: Product): Promise<Product> {
     this.products.push(product);
     return Promise.resolve(product);
   }
@@ -36,9 +31,9 @@ export class ProductInMemory implements IProductRepository {
     return Promise.resolve(filteredProducts);
   }
 
-  async update(id: string, productDto: ProductDto): Promise<Product> {
+  async edit(productDto: Product): Promise<Product> {
     const productIndex = this.products.findIndex(
-      (product) => product.id === id,
+      (product) => product.id === productDto.id,
     );
     if (productIndex === -1) {
       throw new Error('Product not found');
@@ -49,7 +44,7 @@ export class ProductInMemory implements IProductRepository {
     return Promise.resolve(updatedProduct);
   }
 
-  async remove(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     const productIndex = this.products.findIndex(
       (product) => product.id === id,
     );

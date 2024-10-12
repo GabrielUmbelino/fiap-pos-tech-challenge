@@ -1,7 +1,13 @@
-import { Customer, CustomerDto } from '../../ports/model/customer';
-import { ICustomerRepository } from '../../ports/outboundPorts/ICustomerRepository';
+import { Customer, CustomerDto } from '../../../shared/models/customer';
+import { IRepository } from '../../../infrastructure/repositories/iRepository';
 
-export class MockCustomerRepository implements ICustomerRepository {
+export class MockCustomerRepository implements IRepository<Customer> {
+  edit(): Promise<Customer> {
+    throw new Error('Method not implemented.');
+  }
+  delete(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
   private readonly customers: Customer[] = [];
 
   async create(customerDto: CustomerDto): Promise<Customer> {

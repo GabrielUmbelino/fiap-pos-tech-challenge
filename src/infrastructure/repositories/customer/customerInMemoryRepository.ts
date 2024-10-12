@@ -1,17 +1,15 @@
-import { FilterCustomerDto } from './../../ports/model/customer';
 import { Injectable } from '@nestjs/common';
-import { ICustomerRepository } from '../../ports/outboundPorts/ICustomerRepository';
-import { Customer, CustomerDto } from '../../ports/model/customer';
+import { Customer, FilterCustomerDto } from '../../../shared/models/customer';
+import { IRepository } from '../iRepository';
 
 /**
  * This is the implementation of output port, to store things in memory.
  */
 @Injectable()
-export class CustomerInMemory implements ICustomerRepository {
+export class CustomerInMemoryRepository implements IRepository<Customer> {
   private readonly customers: Customer[] = [];
 
-  create(customerDto: CustomerDto): Promise<Customer> {
-    const customer = new Customer(customerDto);
+  create(customer: Customer): Promise<Customer> {
     this.customers.push(customer);
     return Promise.resolve(customer);
   }
@@ -30,5 +28,13 @@ export class CustomerInMemory implements ICustomerRepository {
       return;
     });
     return Promise.resolve(filteredCustomers);
+  }
+
+  delete(): Promise<void> {
+    throw new Error('Método não implementado.');
+  }
+
+  edit(): Promise<Customer> {
+    throw new Error('Método não implementado.');
   }
 }

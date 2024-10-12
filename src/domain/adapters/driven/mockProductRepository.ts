@@ -1,13 +1,18 @@
-import { Product, ProductDto } from '../../ports/model/product';
-import { IProductRepository } from '../../ports/outboundPorts/iProductRepository';
+import { Product, ProductDto } from '../../../shared/models/product';
+import { IRepository } from '../../../infrastructure/repositories/iRepository';
 
-export class MockProductRepository implements IProductRepository {
+export class MockProductRepository implements IRepository<Product> {
+  edit(): Promise<Product> {
+    throw new Error('Method not implemented.');
+  }
+  delete(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
   private readonly products: Product[] = [];
 
-  async create(productDto: ProductDto): Promise<Product> {
-    const createdProduct = new Product(productDto);
-    this.products.push(createdProduct);
-    return Promise.resolve(createdProduct);
+  async create(product: Product): Promise<Product> {
+    this.products.push(product);
+    return Promise.resolve(product);
   }
 
   async findAll(): Promise<Product[]> {
@@ -31,9 +36,9 @@ export class MockProductRepository implements IProductRepository {
     return Promise.resolve(filteredProducts);
   }
 
-  async update(id: string, productDto: ProductDto): Promise<Product> {
+  async update(productDto: Product): Promise<Product> {
     const productIndex = this.products.findIndex(
-      (product) => product.id === id,
+      (product) => product.id === productDto.id,
     );
     if (productIndex === -1) {
       throw new Error('Product not found');
@@ -44,7 +49,7 @@ export class MockProductRepository implements IProductRepository {
     return Promise.resolve(updatedProduct);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     const productIndex = this.products.findIndex(
       (product) => product.id === id,
     );

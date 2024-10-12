@@ -1,9 +1,9 @@
-import { randomUUID } from 'crypto';
+import { randomInt } from 'crypto';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CustomerDto {
   @IsOptional()
-  id?: string;
+  id?: number;
   @IsNotEmpty()
   name: string;
   @IsNotEmpty()
@@ -14,7 +14,7 @@ export class CustomerDto {
 
 export class FilterCustomerDto {
   @IsOptional()
-  id?: string;
+  id?: number;
   @IsOptional()
   name?: string;
   @IsOptional()
@@ -24,13 +24,13 @@ export class FilterCustomerDto {
 }
 
 export class Customer {
-  id: string;
+  id: number;
   name: string;
   document: string;
   phoneNumber: string;
 
   constructor(customerDto: CustomerDto) {
-    this.id = customerDto?.id || randomUUID();
+    this.id = customerDto?.id || randomInt(999);
     this.name = customerDto.name;
     this.document = customerDto.document;
     this.phoneNumber = customerDto.phoneNumber;

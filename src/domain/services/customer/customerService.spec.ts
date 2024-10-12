@@ -1,8 +1,9 @@
-import { CustomerDto } from '../model/customer';
-import { CustomerService } from './customerService';
+import { Customer } from '../../../shared/models/customer';
 import { MockCustomerRepository } from '../../adapters/driven/mockCustomerRepository';
+import { CustomerService } from './customerService';
 
-const customerDto: CustomerDto = {
+const customerDto: Customer = {
+  id: 1,
   name: 'John Doe',
   document: '00000000000',
   phoneNumber: '41 999999999',
