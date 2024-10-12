@@ -7,10 +7,23 @@ import { ProductController } from './adapters/driving/productController';
 import { ProductService } from './ports/inboundPorts/productService';
 import { IProductRepository } from './ports/outboundPorts/IProductRepository';
 import { ProductInMemory } from './adapters/driven/productInMemory';
+import { CategoryController } from './adapters/driving/categoryController';
+import { CategoryService } from './ports/inboundPorts/categoryService';
+import { ICategoryRepository } from './ports/outboundPorts/iCategoryRepository';
+import { CategoryInMemory } from './adapters/driven/categoryInMemory';
+import { OrderController } from './adapters/driving/orderController';
+import { OrderService } from './ports/inboundPorts/orderService';
+import { IOrderRepository } from './ports/outboundPorts/IOrderRepository';
+import { OrderInMemory } from './adapters/driven/orderInMemory';
 
 @Module({
   imports: [],
-  controllers: [CustomerController, ProductController],
+  controllers: [
+    CustomerController,
+    ProductController,
+    CategoryController,
+    OrderController,
+  ],
   providers: [
     CustomerService,
     {
@@ -19,9 +32,19 @@ import { ProductInMemory } from './adapters/driven/productInMemory';
     },
     ProductService,
     {
-      provide:IProductRepository,
-      useClass: ProductInMemory
-    }
+      provide: IProductRepository,
+      useClass: ProductInMemory,
+    },
+    CategoryService,
+    {
+      provide: ICategoryRepository,
+      useClass: CategoryInMemory,
+    },
+    OrderService,
+    {
+      provide: IOrderRepository,
+      useClass: OrderInMemory,
+    },
   ],
 })
 export class DomainModule {}
