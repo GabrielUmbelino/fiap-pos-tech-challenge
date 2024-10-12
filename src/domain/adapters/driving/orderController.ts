@@ -34,14 +34,21 @@ export class OrderController {
     type: String,
     required: false,
   })
+  @ApiQuery({
+    name: 'orderStatus',
+    type: String,
+    required: true,
+  })
   @Get(':params')
   find(
     @Query('id') id?: string,
     @Query('customerName') customerName?: string,
+    @Query('orderStatus') orderStatus?: string,
   ): Promise<Order[]> {
     const filterOrderDto: FilterOrderDto = {
       id,
       customerName,
+      orderStatus,
     };
 
     return this.orderService.find(filterOrderDto);

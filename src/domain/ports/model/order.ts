@@ -12,6 +12,9 @@ export class OrderDto {
   @IsOptional()
   @IsArray()
   productsOrder?: Array<Product>;
+
+  @IsNotEmpty()
+  orderStatus?: string;
 }
 
 export class FilterOrderDto {
@@ -24,16 +27,21 @@ export class FilterOrderDto {
   @IsOptional()
   @IsArray()
   productsOrder?: Array<Product>;
+
+  @IsNotEmpty()
+  orderStatus?: string;
 }
 
 export class Order {
   id: string;
   customerName: string;
   productsOrder?: Array<Product>;
+  orderStatus?: string;
 
   constructor(orderDto: OrderDto) {
     this.id = orderDto?.id || randomUUID();
     this.customerName = orderDto.customerName;
     this.productsOrder = orderDto.productsOrder;
+    this.orderStatus = orderDto.orderStatus;
   }
 }
