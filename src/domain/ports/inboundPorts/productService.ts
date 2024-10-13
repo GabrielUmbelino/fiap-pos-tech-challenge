@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Product, ProductDto, FilterProductDto } from '../model/product';
-import { IProductService } from './iProductService';
+import { IProductService } from './IProductService';
 import { IProductRepository } from '../outboundPorts/IProductRepository';
 
 @Injectable()

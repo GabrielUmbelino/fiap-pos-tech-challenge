@@ -1,4 +1,4 @@
-import { FilterProductDto } from './../../ports/model/product';
+import { FilterProductDto } from "../../ports/model/product";
 import { Injectable } from '@nestjs/common';
 import { IProductRepository } from '../../ports/outboundPorts/IProductRepository';
 import { Product, ProductDto } from '../../ports/model/product';
