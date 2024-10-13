@@ -1,0 +1,18 @@
+services:
+  # Container com a API baseada em NestJS.
+  api:
+    build:
+      # Torna o diretório atual visível para o builder do container, para que possamos copiar os arquivos do projeto
+      # para dentro do container.
+      context: .
+      # Arquivo de definição da imagem do container.
+      dockerfile: docker/api/Dockerfile
+    ports:
+      # Expondo aplicação na porta 5000.
+      - "5000:5000"
+    # Define health check simples que só testa se o endpoint padrão está respondendo requisições.
+    healthcheck:
+      test: curl -k -f http://localhost:5000
+      interval: 10s
+      timeout: 10s
+      retries: 10

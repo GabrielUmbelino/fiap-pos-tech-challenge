@@ -10,6 +10,8 @@ export class CustomerDto {
   document: string;
   @IsNotEmpty()
   phoneNumber: string;
+  @IsOptional()
+  email?: string;
 }
 
 export class FilterCustomerDto {
@@ -21,6 +23,8 @@ export class FilterCustomerDto {
   document?: string;
   @IsOptional()
   phoneNumber?: string;
+  @IsOptional()
+  email?: string;
 }
 
 export class Customer {
@@ -28,11 +32,13 @@ export class Customer {
   name: string;
   document: string;
   phoneNumber: string;
+  email: string;
 
   constructor(customerDto: CustomerDto) {
     this.id = customerDto?.id || randomInt(999);
     this.name = customerDto.name;
     this.document = customerDto.document;
     this.phoneNumber = customerDto.phoneNumber;
+    this.email = customerDto.email;
   }
 }
