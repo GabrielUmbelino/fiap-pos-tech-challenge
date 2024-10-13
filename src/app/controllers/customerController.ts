@@ -13,8 +13,8 @@ import {
   Customer,
   CustomerDto,
   FilterCustomerDto,
-} from '../shared/models/customer';
-import { IService } from '../domain/iService';
+} from '../../shared/models/customer';
+import { IService } from '../../domain/iService';
 
 @Controller('customer')
 export class CustomerController {

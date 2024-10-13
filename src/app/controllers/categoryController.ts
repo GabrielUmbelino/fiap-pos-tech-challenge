@@ -1,23 +1,25 @@
-import { FilterCategoryDto } from './../../ports/model/category';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  Inject,
   Logger,
   Param,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
-import { CategoryService } from '../../ports/inboundPorts/categoryService';
-import { Category, CategoryDto } from '../../ports/model/category';
+import { Category, CategoryDto, FilterCategoryDto } from '../../shared/models';
 import { ApiQuery } from '@nestjs/swagger';
+import { IService } from '../../domain/iService';
 
 @Controller('category')
 export class CategoryController {
   private readonly logger = new Logger(CategoryController.name);
-  constructor(private categoryService: CategoryService) {}
+  constructor(
+    @Inject('IService<Category>') private categoryService: IService<Category>,
+  ) {}
 
   @Get()
   findAll(): Promise<Category[]> {
@@ -36,12 +38,12 @@ export class CategoryController {
   })
   @Get(':params')
   find(
-    @Query('id') id?: string,
-    @Query('categoryName') categoryName?: string,
+    @Query('id') id?: number,
+    @Query('categoryName') name?: string,
   ): Promise<Category[]> {
     const filterCategoryDto: FilterCategoryDto = {
       id,
-      categoryName,
+      name,
     };
 
     return this.categoryService.find(filterCategoryDto);
@@ -49,25 +51,24 @@ export class CategoryController {
 
   @Post()
   async create(@Body() categoryDto: CategoryDto): Promise<Category> {
-    const category = await this.categoryService.create(categoryDto);
+    const category = await this.categoryService.create(categoryDto as Category);
     this.logger.debug(categoryDto);
     this.logger.debug({ category });
     return category;
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() categoryDto: CategoryDto,
-  ): Promise<Category> {
-    const updatedCategory = await this.categoryService.update(id, categoryDto);
+  async edit(@Body() categoryDto: CategoryDto): Promise<Category> {
+    const updatedCategory = await this.categoryService.edit(
+      categoryDto as Category,
+    );
     this.logger.debug(`Updated category: ${JSON.stringify(updatedCategory)}`);
     return updatedCategory;
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    await this.categoryService.remove(id);
+  async delete(@Param('id') id: number): Promise<void> {
+    await this.categoryService.delete(id);
     this.logger.debug(`Deleted category with id: ${id}`);
   }
 }

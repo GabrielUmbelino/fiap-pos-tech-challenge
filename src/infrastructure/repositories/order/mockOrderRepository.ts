@@ -1,7 +1,7 @@
-import { Order, OrderDto } from '../../ports/model/order';
-import { IOrderRepository } from '../../ports/outboundPorts/iOrderRepository';
+import { Order, OrderDto } from '../../../shared/models';
+import { IRepository } from '../iRepository';
 
-export class MockOrderRepository implements IOrderRepository {
+export class MockOrderRepository implements IRepository<Order> {
   private readonly orders: Order[] = [];
 
   async create(orderDto: OrderDto): Promise<Order> {
@@ -18,8 +18,8 @@ export class MockOrderRepository implements IOrderRepository {
     const filteredOrders = this.orders.filter((order) => {
       if (filterOrderDto.id && order.id === filterOrderDto.id) return true;
       if (
-        filterOrderDto.customerName &&
-        order.customerName === filterOrderDto.customerName
+        filterOrderDto.customerId &&
+        order.customerId === filterOrderDto.customerId
       )
         return true;
       return false;
@@ -28,8 +28,10 @@ export class MockOrderRepository implements IOrderRepository {
     return Promise.resolve(filteredOrders);
   }
 
-  async update(id: string, orderDto: OrderDto): Promise<Order> {
-    const orderIndex = this.orders.findIndex((order) => order.id === id);
+  async edit(orderDto: OrderDto): Promise<Order> {
+    const orderIndex = this.orders.findIndex(
+      (order) => order.id === orderDto.id,
+    );
     if (orderIndex === -1) {
       throw new Error('Order not found');
     }
@@ -39,7 +41,7 @@ export class MockOrderRepository implements IOrderRepository {
     return Promise.resolve(updatedOrder);
   }
 
-  async remove(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     const orderIndex = this.orders.findIndex((order) => order.id === id);
     if (orderIndex === -1) {
       throw new Error('Order not found');

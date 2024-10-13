@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { Customer, FilterCustomerDto } from '../../../shared/models/customer';
-import { IRepository } from '../iRepository';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CustomerEntity } from './customer.entity';
 import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Customer, FilterCustomerDto } from '../../../shared/models';
+import { CustomerEntity } from './customer.entity';
+import { IRepository } from '../iRepository';
 
 @Injectable()
 export class CustomerInDbRepository implements IRepository<Customer> {
@@ -20,12 +20,12 @@ export class CustomerInDbRepository implements IRepository<Customer> {
         phoneNumber: customer.phoneNumber,
       })
       .then((customerEntity) => {
-        return {
+        return new Customer({
           id: customerEntity.id,
           name: customerEntity.name,
           document: customerEntity.document,
           phoneNumber: customerEntity.phoneNumber,
-        };
+        });
       })
       .catch((error) => {
         throw new Error(
@@ -42,12 +42,15 @@ export class CustomerInDbRepository implements IRepository<Customer> {
     return this.repository
       .findBy(customerDto)
       .then((customerEntities) => {
-        return customerEntities.map((customerEntity) => ({
-          id: customerEntity.id,
-          name: customerEntity.name,
-          document: customerEntity.document,
-          phoneNumber: customerEntity.phoneNumber,
-        }));
+        return customerEntities.map(
+          (customerEntity) =>
+            new Customer({
+              id: customerEntity.id,
+              name: customerEntity.name,
+              document: customerEntity.document,
+              phoneNumber: customerEntity.phoneNumber,
+            }),
+        );
       })
       .catch((error) => {
         throw new Error(

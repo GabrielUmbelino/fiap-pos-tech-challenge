@@ -1,26 +1,26 @@
-import { randomUUID } from 'crypto';
+import { randomInt } from 'crypto';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CategoryDto {
   @IsOptional()
-  id?: string;
+  id?: number;
   @IsNotEmpty()
-  categoryName?: string;
+  name?: string;
 }
 
 export class FilterCategoryDto {
   @IsOptional()
-  id?: string;
+  id?: number;
   @IsNotEmpty()
-  categoryName?: string;
+  name?: string;
 }
 
 export class Category {
-  id: string;
-  categoryName: string;
+  id: number;
+  name: string;
 
   constructor(categoryDto: CategoryDto) {
-    this.id = categoryDto?.id || randomUUID();
-    this.categoryName = categoryDto.categoryName;
+    this.id = categoryDto?.id || randomInt(999);
+    this.name = categoryDto.name;
   }
 }

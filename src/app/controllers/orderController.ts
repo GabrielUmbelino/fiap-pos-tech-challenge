@@ -1,23 +1,23 @@
-import { FilterOrderDto } from './../../ports/model/order';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  Inject,
   Logger,
   Param,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
-import { OrderService } from '../../ports/inboundPorts/orderService';
-import { Order, OrderDto } from '../../ports/model/order';
 import { ApiQuery } from '@nestjs/swagger';
+import { OrderService } from '../../domain';
+import { Order, OrderDto, FilterOrderDto } from '../../shared/models';
 
 @Controller('order')
 export class OrderController {
   private readonly logger = new Logger(OrderController.name);
-  constructor(private orderService: OrderService) {}
+  constructor(@Inject('IService<Order>') private orderService: OrderService) {}
 
   @Get()
   findAll(): Promise<Order[]> {
@@ -26,29 +26,29 @@ export class OrderController {
 
   @ApiQuery({
     name: 'id',
-    type: String,
+    type: Number,
     required: false,
   })
   @ApiQuery({
-    name: 'customerName',
-    type: String,
+    name: 'customerId',
+    type: Number,
     required: false,
   })
   @ApiQuery({
-    name: 'orderStatus',
+    name: 'status',
     type: String,
     required: true,
   })
   @Get(':params')
   find(
-    @Query('id') id?: string,
-    @Query('customerName') customerName?: string,
-    @Query('orderStatus') orderStatus?: string,
+    @Query('id') id?: number,
+    @Query('customerId') customerId?: number,
+    @Query('status') status?: string,
   ): Promise<Order[]> {
     const filterOrderDto: FilterOrderDto = {
       id,
-      customerName,
-      orderStatus,
+      customerId,
+      status,
     };
 
     return this.orderService.find(filterOrderDto);
@@ -56,25 +56,22 @@ export class OrderController {
 
   @Post()
   async create(@Body() orderDto: OrderDto): Promise<Order> {
-    const order = await this.orderService.create(orderDto);
+    const order = await this.orderService.create(orderDto as Order);
     this.logger.debug(orderDto);
     this.logger.debug({ order });
     return order;
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() orderDto: OrderDto,
-  ): Promise<Order> {
-    const updatedOrder = await this.orderService.update(id, orderDto);
+  async put(@Body() orderDto: OrderDto): Promise<Order> {
+    const updatedOrder = await this.orderService.edit(orderDto as Order);
     this.logger.debug(`Updated order: ${JSON.stringify(updatedOrder)}`);
     return updatedOrder;
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    await this.orderService.remove(id);
+  async delete(@Param('id') id: number): Promise<void> {
+    await this.orderService.delete(id);
     this.logger.debug(`Deleted order with id: ${id}`);
   }
 }

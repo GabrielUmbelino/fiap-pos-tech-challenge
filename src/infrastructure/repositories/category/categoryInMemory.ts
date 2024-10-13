@@ -1,13 +1,16 @@
-import { FilterCategoryDto } from './../../ports/model/category';
 import { Injectable } from '@nestjs/common';
-import { ICategoryRepository } from '../../ports/outboundPorts/iCategoryRepository';
-import { Category, CategoryDto } from '../../ports/model/category';
+import {
+  Category,
+  CategoryDto,
+  FilterCategoryDto,
+} from '../../../shared/models';
+import { IRepository } from '../iRepository';
 
 /**
  * This is the implementation of output port, to store things in memory.
  */
 @Injectable()
-export class CategoryInMemory implements ICategoryRepository {
+export class CategoryInMemory implements IRepository<Category> {
   private readonly categories: Category[] = [];
 
   create(categoryDto: CategoryDto): Promise<Category> {
@@ -24,19 +27,16 @@ export class CategoryInMemory implements ICategoryRepository {
     const filteredCategories = this.categories.filter((category) => {
       if (filterCategoryDto.id && category.id === filterCategoryDto.id)
         return true;
-      if (
-        filterCategoryDto.categoryName &&
-        category.categoryName === filterCategoryDto.categoryName
-      )
+      if (filterCategoryDto.name && category.name === filterCategoryDto.name)
         return true;
       return false;
     });
     return Promise.resolve(filteredCategories);
   }
 
-  async update(id: string, categoryDto: CategoryDto): Promise<Category> {
+  async edit(categoryDto: CategoryDto): Promise<Category> {
     const categoryIndex = this.categories.findIndex(
-      (category) => category.id === id,
+      (category) => category.id === categoryDto.id,
     );
     if (categoryIndex === -1) {
       throw new Error('Category not found');
@@ -50,7 +50,7 @@ export class CategoryInMemory implements ICategoryRepository {
     return Promise.resolve(updatedCategory);
   }
 
-  async remove(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     const categoryIndex = this.categories.findIndex(
       (category) => category.id === id,
     );

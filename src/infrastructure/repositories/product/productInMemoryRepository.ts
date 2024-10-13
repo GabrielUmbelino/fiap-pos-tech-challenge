@@ -19,10 +19,7 @@ export class ProductInMemoryRepository implements IRepository<Product> {
     const filteredProducts = this.products.filter((product) => {
       if (filterProductDto.id && product.id === filterProductDto.id)
         return true;
-      if (
-        filterProductDto.productName &&
-        product.productName === filterProductDto.productName
-      )
+      if (filterProductDto.name && product.name === filterProductDto.name)
         return true;
       if (
         filterProductDto.price !== undefined &&

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Customer, FilterCustomerDto } from '../../../shared/models/customer';
+import { Customer, FilterCustomerDto } from '../../../shared/models';
 import { IRepository } from '../iRepository';
 
 /**

@@ -1,4 +1,4 @@
-import { Product, ProductDto } from '../../../shared/models/product';
+import { Product, ProductDto } from '../../../shared/models';
 import { IRepository } from '../../../infrastructure/repositories/iRepository';
 
 export class MockProductRepository implements IRepository<Product> {

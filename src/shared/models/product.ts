@@ -1,12 +1,11 @@
 import { randomInt } from 'crypto';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { Category } from './category';
 
 export class ProductDto {
   @IsOptional()
   id: number;
   @IsNotEmpty()
-  productName?: string;
+  name?: string;
   @IsNotEmpty()
   price?: number;
 }
@@ -15,7 +14,7 @@ export class FilterProductDto {
   @IsOptional()
   id?: number;
   @IsOptional()
-  productName?: string;
+  name?: string;
   @IsOptional()
   price?: number;
 }

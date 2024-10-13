@@ -10,14 +10,9 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-
 import { ApiQuery } from '@nestjs/swagger';
-import {
-  FilterProductDto,
-  Product,
-  ProductDto,
-} from '../shared/models/product';
-import { IService } from '../domain/iService';
+import { FilterProductDto, Product, ProductDto } from '../../shared/models';
+import { IService } from '../../domain/iService';
 
 @Controller('product')
 export class ProductController {

@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { config as dotenvConfig } from 'dotenv';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DatabaseConstants } from './postgres.constants';
-import { CustomerEntity } from '../repositories/customer/customer.entity';
-import { ProductEntity } from '../repositories/product/product.entity';
-import { config as dotenvConfig } from 'dotenv';
+import { CustomerEntity } from '../repositories/customer';
+import { ProductEntity } from '../repositories/product';
+import { CategoryEntity } from '../repositories/category';
+import { OrderEntity } from '../repositories/order';
 
 dotenvConfig({ path: process.cwd() + '/envs/.env.local' });
 
@@ -28,7 +30,12 @@ dotenvConfig({ path: process.cwd() + '/envs/.env.local' });
           username: `${process.env.POSTGRES_USER}`,
           password: `${process.env.POSTGRES_PASSWORD}`,
           database: `${process.env.POSTGRES_DATABASE}`,
-          entities: [CustomerEntity, ProductEntity],
+          entities: [
+            CustomerEntity,
+            ProductEntity,
+            CategoryEntity,
+            OrderEntity,
+          ],
           synchronize: DatabaseConstants.DATABASE_SYNCHRONIZE,
           logging: DatabaseConstants.DATABASE_LOGGING,
           autoLoadEntities: DatabaseConstants.DATABASE_AUTO_LOAD_ENTITIES,

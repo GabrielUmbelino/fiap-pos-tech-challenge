@@ -1,7 +1,7 @@
-import { Category, CategoryDto } from '../../ports/model/category';
-import { ICategoryRepository } from '../../ports/outboundPorts/iCategoryRepository';
+import { Category, CategoryDto } from '../../../shared/models';
+import { IRepository } from '../iRepository';
 
-export class MockCategoryRepository implements ICategoryRepository {
+export class MockCategoryRepository implements IRepository<Category> {
   private readonly categorys: Category[] = [];
 
   async create(categoryDto: CategoryDto): Promise<Category> {
@@ -18,10 +18,7 @@ export class MockCategoryRepository implements ICategoryRepository {
     const filteredCategories = this.categorys.filter((category) => {
       if (filterCategoryDto.id && category.id === filterCategoryDto.id)
         return true;
-      if (
-        filterCategoryDto.categoryName &&
-        category.categoryName === filterCategoryDto.categoryName
-      )
+      if (filterCategoryDto.name && category.name === filterCategoryDto.name)
         return true;
       return false;
     });
@@ -29,9 +26,9 @@ export class MockCategoryRepository implements ICategoryRepository {
     return Promise.resolve(filteredCategories);
   }
 
-  async update(id: string, categoryDto: CategoryDto): Promise<Category> {
+  async edit(categoryDto: CategoryDto): Promise<Category> {
     const categoryIndex = this.categorys.findIndex(
-      (category) => category.id === id,
+      (category) => category.id === categoryDto.id,
     );
     if (categoryIndex === -1) {
       throw new Error('Category not found');
@@ -45,7 +42,7 @@ export class MockCategoryRepository implements ICategoryRepository {
     return Promise.resolve(updatedCategory);
   }
 
-  async remove(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     const categoryIndex = this.categorys.findIndex(
       (category) => category.id === id,
     );

@@ -1,10 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FilterProductDto, Product } from '../../../shared/models/product';
 import { IRepository } from '../../../infrastructure/repositories/iRepository';
+import { FilterProductDto, Product } from '../../../shared/models';
 import { IService } from '../../iService';
 
 @Injectable()
-// TODO change to iService
 export class ProductService implements IService<Product> {
   constructor(
     @Inject('IRepository<Product>')

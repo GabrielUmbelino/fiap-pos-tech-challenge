@@ -1,5 +1,5 @@
-import { Customer } from '../../../shared/models/customer';
-import { MockCustomerRepository } from '../../adapters/driven/mockCustomerRepository';
+import { MockCustomerRepository } from '../../../infrastructure/repositories/customer';
+import { Customer } from '../../../shared/models';
 import { CustomerService } from './customerService';
 
 const customerDto: Customer = {
@@ -7,6 +7,7 @@ const customerDto: Customer = {
   name: 'John Doe',
   document: '00000000000',
   phoneNumber: '41 999999999',
+  email: 'gabriel.f.umbelino@gmail.com',
 };
 
 describe('Customer Service', () => {
