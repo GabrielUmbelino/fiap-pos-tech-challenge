@@ -4,7 +4,7 @@
 
  - Bruno Zanella
  - Gabriel Ferreira Umbelino
- - *~~*Michael Dougras da Silva*~~*
+ - Michael Dougras da Silva
  - Victor Zaniquelli
 
 ## Introdução
