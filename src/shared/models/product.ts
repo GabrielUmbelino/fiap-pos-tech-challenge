@@ -1,13 +1,18 @@
 import { randomInt } from 'crypto';
 import { IsNotEmpty, IsOptional } from 'class-validator';
+import { Category } from './category';
 
 export class ProductDto {
   @IsOptional()
   id: number;
   @IsNotEmpty()
-  name?: string;
+  name: string;
   @IsNotEmpty()
-  price?: number;
+  price: string;
+  @IsNotEmpty()
+  status: 'available' | 'draft' | 'outOfStock' | 'deleted';
+  @IsNotEmpty()
+  categoryId: number;
 }
 
 export class FilterProductDto {
@@ -16,17 +21,23 @@ export class FilterProductDto {
   @IsOptional()
   name?: string;
   @IsOptional()
-  price?: number;
+  price?: string;
+  @IsOptional()
+  categoryId?: number;
 }
 
 export class Product {
   id?: number;
   name: string;
-  price: number;
+  price: string;
+  status: 'available' | 'draft' | 'outOfStock' | 'deleted';
+  category: Category;
 
-  constructor(productDto: ProductDto) {
+  constructor(productDto: ProductDto, category: Category) {
     this.id = productDto?.id || randomInt(999);
     this.name = productDto.name;
     this.price = productDto.price;
+    this.status = productDto.status;
+    this.category = category;
   }
 }

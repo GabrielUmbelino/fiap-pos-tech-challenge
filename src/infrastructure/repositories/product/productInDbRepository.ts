@@ -13,33 +13,45 @@ export class ProductInDbRepository implements IRepository<Product> {
   ) {}
 
   create(product: Product): Promise<Product> {
+    console.log(product);
     return this.repository
       .save({
         name: product.name,
         price: product.price,
+        status: product.status,
+        category: product.category,
+
+        // TODO: implement following fields
+        // ativo: produtoEntity.ativo,
+        // descricao: produtoEntity.descricao,
+        // imagemBase64: produtoEntity.imagemBase64,
       })
       .then((productEntity) => {
         return productEntity;
       })
       .catch((error) => {
         throw new Error(
-          `An error occurred while saving the product to the database: '${product}': ${error.message}`,
+          `An error occurred while saving the product to the database: '${JSON.stringify(product)}': ${error.message}`,
         );
       });
   }
 
   findAll(): Promise<Product[]> {
     return this.repository
-      .find()
+      .find({ relations: ['category'] })
       .then((produtoEntities) => {
+        console.log(produtoEntities);
         return produtoEntities.map((produtoEntity) => ({
           id: produtoEntity.id,
           name: produtoEntity.name,
           price: produtoEntity.price,
+          status: produtoEntity.status,
+          category: produtoEntity.category,
+
+          // TODO: implement following fields
           // ativo: produtoEntity.ativo,
           // descricao: produtoEntity.descricao,
           // imagemBase64: produtoEntity.imagemBase64,
-          // idCategoriaProduto: produtoEntity.idCategoriaProduto,
         }));
       })
       .catch((error) => {
@@ -57,10 +69,13 @@ export class ProductInDbRepository implements IRepository<Product> {
           id: produtoEntity.id,
           name: produtoEntity.name,
           price: produtoEntity.price,
+          status: produtoEntity.status,
+          category: produtoEntity.category,
+
+          // TODO: implement following fields
           // ativo: produtoEntity.ativo,
           // descricao: produtoEntity.descricao,
           // imagemBase64: produtoEntity.imagemBase64,
-          // idCategoriaProduto: produtoEntity.idCategoriaProduto,
         }));
       })
       .catch((error) => {
