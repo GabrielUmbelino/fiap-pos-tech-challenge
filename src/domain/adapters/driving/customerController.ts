@@ -34,18 +34,25 @@ export class CustomerController {
     type: String,
     required: false,
   })
+  @ApiQuery({
+    name: 'email',
+    type: String,
+    required: false,
+  })
   @Get(':params')
   find(
     @Query('id') id?: string,
     @Query('name') name?: string,
     @Query('document') document?: string,
     @Query('phoneNumber') phoneNumber?: string,
+    @Query('email') email?: string,
   ): Promise<Customer[]> {
     const filterCustomerDto: FilterCustomerDto = {
       id,
       name,
       document,
       phoneNumber,
+      email,
     };
 
     return this.customerService.find(filterCustomerDto);
