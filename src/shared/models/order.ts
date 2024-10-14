@@ -1,6 +1,7 @@
 import { randomInt } from 'crypto';
 import { IsNotEmpty, IsOptional, IsArray } from 'class-validator';
-import { Product } from './product';
+import { OrderItem } from './orderItem';
+import { Customer } from './customer';
 
 export class OrderDto {
   @IsOptional()
@@ -11,10 +12,10 @@ export class OrderDto {
 
   @IsOptional()
   @IsArray()
-  orderProducts?: Array<Product>;
+  itemIds: Array<number>;
 
   @IsNotEmpty()
-  status?: string;
+  status: Order['status'];
 }
 
 export class FilterOrderDto {
@@ -22,26 +23,23 @@ export class FilterOrderDto {
   id?: number;
 
   @IsNotEmpty()
-  customerId: number;
-
-  @IsOptional()
-  @IsArray()
-  orderProducts?: Array<Product>;
+  customerId?: number;
 
   @IsNotEmpty()
-  status?: string;
+  status?: Order['status'];
 }
 
 export class Order {
   id: number;
-  customerId: number;
-  orderProducts?: Array<Product>;
-  status?: string;
+  status: 'new' | 'confirmed' | 'inProgress' | 'finished' | 'canceled';
+  totalPrice: string;
+  customer: Customer;
+  items: Array<OrderItem>;
 
-  constructor(orderDto: OrderDto) {
+  constructor(orderDto: OrderDto, customer: Customer, items: OrderItem[]) {
     this.id = orderDto?.id || randomInt(999);
-    this.customerId = orderDto.customerId;
-    this.orderProducts = orderDto.orderProducts;
     this.status = orderDto.status;
+    this.customer = customer;
+    this.items = items;
   }
 }

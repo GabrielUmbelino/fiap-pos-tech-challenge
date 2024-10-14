@@ -11,7 +11,16 @@ export class OrderService implements IService<Order> {
   ) {}
 
   create(orderDto: Order): Promise<Order> {
-    return this.orderRepository.create(orderDto);
+    const totalPrice = orderDto.items.reduce((prevSum, currentItem) => {
+      const itemSum =
+        currentItem.quantity * Number.parseFloat(currentItem.product.price);
+      return prevSum + itemSum;
+    }, 0);
+
+    return this.orderRepository.create({
+      ...orderDto,
+      totalPrice: `${totalPrice}`,
+    });
   }
 
   findAll(): Promise<Order[]> {

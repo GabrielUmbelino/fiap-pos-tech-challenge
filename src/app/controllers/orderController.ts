@@ -11,13 +11,17 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiQuery } from '@nestjs/swagger';
-import { OrderService } from '../../domain';
+import { CustomerService, OrderService, ProductService } from '../../domain';
 import { Order, OrderDto, FilterOrderDto } from '../../shared/models';
 
 @Controller('order')
 export class OrderController {
   private readonly logger = new Logger(OrderController.name);
-  constructor(@Inject('IService<Order>') private orderService: OrderService) {}
+  constructor(
+    @Inject('IService<Order>') private orderService: OrderService,
+    @Inject('IService<Product>') private productService: ProductService,
+    @Inject('IService<Customer>') private customerService: CustomerService,
+  ) {}
 
   @Get()
   findAll(): Promise<Order[]> {
@@ -43,7 +47,7 @@ export class OrderController {
   find(
     @Query('id') id?: number,
     @Query('customerId') customerId?: number,
-    @Query('status') status?: string,
+    @Query('status') status?: Order['status'],
   ): Promise<Order[]> {
     const filterOrderDto: FilterOrderDto = {
       id,
@@ -56,9 +60,14 @@ export class OrderController {
 
   @Post()
   async create(@Body() orderDto: OrderDto): Promise<Order> {
-    const order = await this.orderService.create(orderDto as Order);
-    this.logger.debug(orderDto);
-    this.logger.debug({ order });
+    const customer = this.customerService.find({ id: orderDto.customerId });
+
+    const order = {
+      status: orderDto.status,
+      customer,
+    };
+    const createdOrder = await this.orderService.create(order);
+    this.logger.debug({ createdOrder });
     return order;
   }
 

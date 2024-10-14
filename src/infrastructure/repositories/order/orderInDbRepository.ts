@@ -16,15 +16,11 @@ export class OrderInDbRepository implements IRepository<Order> {
     return this.repository
       .save({
         status: order.status,
+        totalPrice: order.totalPrice,
+        items: order.items,
+        customer: order.customer,
       })
-      .then((orderEntity) => {
-        return new Order({
-          id: orderEntity.id,
-          status: orderEntity.status,
-          customerId: null,
-          orderProducts: [],
-        });
-      })
+      .then((orderEntity) => orderEntity)
       .catch((error) => {
         throw new Error(
           `An error occurred while saving the order to the database: '${JSON.stringify(order)}': ${error.message}`,
@@ -43,8 +39,9 @@ export class OrderInDbRepository implements IRepository<Order> {
         return orderEntities.map((orderEntity) => ({
           id: orderEntity.id,
           status: orderEntity.status,
-          customerId: null,
-          orderProducts: [],
+          totalPrice: orderEntity.totalPrice,
+          items: orderEntity.items,
+          customer: orderEntity.customer,
         }));
       })
       .catch((error) => {

@@ -13,7 +13,6 @@ export class ProductInDbRepository implements IRepository<Product> {
   ) {}
 
   create(product: Product): Promise<Product> {
-    console.log(product);
     return this.repository
       .save({
         name: product.name,
@@ -26,9 +25,7 @@ export class ProductInDbRepository implements IRepository<Product> {
         // descricao: produtoEntity.descricao,
         // imagemBase64: produtoEntity.imagemBase64,
       })
-      .then((productEntity) => {
-        return productEntity;
-      })
+      .then((productEntity) => productEntity)
       .catch((error) => {
         throw new Error(
           `An error occurred while saving the product to the database: '${JSON.stringify(product)}': ${error.message}`,
