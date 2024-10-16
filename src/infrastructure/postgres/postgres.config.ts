@@ -7,6 +7,7 @@ import { CustomerEntity } from '../repositories/customer';
 import { ProductEntity } from '../repositories/product';
 import { CategoryEntity } from '../repositories/category';
 import { OrderEntity } from '../repositories/order';
+import { OrderItemEntity } from '../repositories/orderItem';
 
 dotenvConfig({ path: process.cwd() + '/envs/.env.local' });
 
@@ -16,13 +17,6 @@ dotenvConfig({ path: process.cwd() + '/envs/.env.local' });
     {
       provide: DatabaseConstants.DATABASE_CONFIG_NAME,
       useFactory: (): TypeOrmModuleOptions => {
-        console.log({
-          host: `${process.env.POSTGRES_HOST}`,
-          port: `${process.env.POSTGRES_PORT}`,
-          username: `${process.env.POSTGRES_USER}`,
-          password: `${process.env.POSTGRES_PASSWORD}`,
-          database: `${process.env.POSTGRES_DATABASE}`,
-        });
         return {
           type: DatabaseConstants.DATABASE_TYPE,
           host: `${process.env.POSTGRES_HOST}`,
@@ -35,6 +29,7 @@ dotenvConfig({ path: process.cwd() + '/envs/.env.local' });
             ProductEntity,
             CategoryEntity,
             OrderEntity,
+            OrderItemEntity,
           ],
           synchronize: DatabaseConstants.DATABASE_SYNCHRONIZE,
           logging: DatabaseConstants.DATABASE_LOGGING,

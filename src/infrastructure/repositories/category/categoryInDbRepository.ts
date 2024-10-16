@@ -31,12 +31,29 @@ export class CategoryInDbRepository implements IRepository<Category> {
   }
 
   findAll(): Promise<Category[]> {
-    throw new Error('Method not implemented.');
+    return this.repository
+      .find()
+      .then((categoryEntities) => {
+        return categoryEntities.map(
+          (categoryEntity) =>
+            new Category({
+              id: categoryEntity.id,
+              name: categoryEntity.name,
+            }),
+        );
+      })
+      .catch((error) => {
+        throw new Error(
+          `An error occurred while searching the category in the database: ${error.message}`,
+        );
+      });
   }
 
   find(categoryDto: FilterCategoryDto): Promise<Category[]> {
     return this.repository
-      .findBy(categoryDto)
+      .createQueryBuilder('category')
+      .where('category.id = :id', { id: categoryDto.id })
+      .getMany()
       .then((categoryEntities) => {
         return categoryEntities.map(
           (categoryEntity) =>

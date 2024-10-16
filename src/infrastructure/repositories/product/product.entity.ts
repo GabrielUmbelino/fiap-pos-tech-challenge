@@ -1,25 +1,26 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { CategoryEntity } from '../category';
 
 @Entity({ name: 'Product' })
 export class ProductEntity {
   @PrimaryGeneratedColumn({ name: 'ID' })
   id: number;
 
-  @Column({ name: 'PRODUCT_CATEGORY_ID' })
-  productCategoryId: number;
+  @ManyToOne(() => CategoryEntity, (category) => category, { cascade: true })
+  category: CategoryEntity;
 
   @Column({ name: 'NAME' })
   name: string;
 
-  @Column({ name: 'DESCRIPTION' })
-  description: string;
-
   @Column({ name: 'PRICE' })
-  price: number;
-
-  @Column({ name: 'IMAGE' })
-  imageBase64: string;
+  price: string;
 
   @Column({ name: 'STATUS' })
-  status: string;
+  status: 'available' | 'draft' | 'outOfStock' | 'deleted';
+
+  @Column({ name: 'DESCRIPTION', nullable: true })
+  description: string;
+
+  @Column({ name: 'IMAGE', nullable: true })
+  imageBase64: string;
 }

@@ -10,8 +10,12 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiQuery } from '@nestjs/swagger';
-import { FilterProductDto, Product, ProductDto } from '../../shared/models';
+import {
+  Category,
+  FilterProductDto,
+  Product,
+  ProductDto,
+} from '../../shared/models';
 import { IService } from '../../domain/iService';
 
 @Controller('product')
@@ -19,38 +23,19 @@ export class ProductController {
   private readonly logger = new Logger(ProductController.name);
   constructor(
     @Inject('IService<Product>') private productService: IService<Product>,
+    @Inject('IService<Category>') private categoryService: IService<Category>,
   ) {}
 
   @Get()
   findAll(): Promise<Product[]> {
+    console.log('find all');
     return this.productService.findAll();
   }
 
-  @ApiQuery({
-    name: 'id',
-    type: Number,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'name',
-    type: String,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'price',
-    type: Number,
-    required: false,
-  })
-  @Get(':params')
-  find(
-    @Query('id') id?: number,
-    @Query('name') name?: string,
-    @Query('price') price?: number,
-  ): Promise<Product[]> {
+  @Get('category/:categoryId')
+  find(@Param('categoryId') categoryId?: number): Promise<Product[]> {
     const filterProductDto: FilterProductDto = {
-      id,
-      name,
-      price,
+      categoryId,
     };
 
     return this.productService.find(filterProductDto);
@@ -58,21 +43,23 @@ export class ProductController {
 
   @Post()
   async create(@Body() productDto: ProductDto): Promise<Product> {
-    const product = await this.productService.create(productDto as Product);
-    this.logger.debug(productDto);
-    this.logger.debug({ product });
-    return product;
+    const categories = await this.categoryService.find({
+      id: productDto.categoryId,
+    });
+    const [category] = categories;
+    const product = new Product(productDto, category);
+    const createdProduct = await this.productService.create(product);
+    this.logger.debug(`Updated product: ${JSON.stringify(createdProduct)}`);
+    return createdProduct;
   }
 
   @Put(':id')
-  async edit(
-    @Param('id') id: number,
-    @Body() productDto: ProductDto,
-  ): Promise<Product> {
-    const updatedProduct = await this.productService.edit({
-      ...productDto,
-      id,
-    } as Product);
+  async edit(@Body() productDto: ProductDto): Promise<Product> {
+    const [category] = await this.categoryService.find({
+      id: productDto.categoryId,
+    });
+    const product = new Product(productDto, category);
+    const updatedProduct = await this.productService.edit(product);
     this.logger.debug(`Updated product: ${JSON.stringify(updatedProduct)}`);
     return updatedProduct;
   }

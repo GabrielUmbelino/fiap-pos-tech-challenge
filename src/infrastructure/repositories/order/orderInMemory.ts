@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IRepository } from '../iRepository';
-import { FilterOrderDto, Order, OrderDto } from '../../../shared/models';
+import { FilterOrderDto, Order } from '../../../shared/models';
 
 /**
  * This is the implementation of output port, to store things in memory.
@@ -9,8 +9,7 @@ import { FilterOrderDto, Order, OrderDto } from '../../../shared/models';
 export class OrderInMemory implements IRepository<Order> {
   private readonly orders: Order[] = [];
 
-  create(orderDto: OrderDto): Promise<Order> {
-    const order = new Order(orderDto);
+  create(order: Order): Promise<Order> {
     this.orders.push(order);
     return Promise.resolve(order);
   }
@@ -24,7 +23,7 @@ export class OrderInMemory implements IRepository<Order> {
       if (filterOrderDto.id && order.id === filterOrderDto.id) return true;
       if (
         filterOrderDto.customerId &&
-        order.customerId === filterOrderDto.customerId
+        order.customer.id === filterOrderDto.customerId
       )
         return true;
       return false;
@@ -32,7 +31,7 @@ export class OrderInMemory implements IRepository<Order> {
     return Promise.resolve(filteredOrders);
   }
 
-  async edit(orderDto: OrderDto): Promise<Order> {
+  async edit(orderDto: Order): Promise<Order> {
     const orderIndex = this.orders.findIndex(
       (order) => order.id === orderDto.id,
     );

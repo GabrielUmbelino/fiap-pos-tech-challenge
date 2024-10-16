@@ -5,6 +5,7 @@ import {
   CategoryController,
   ProductController,
   OrderController,
+  OrderItemController,
 } from './controllers';
 import { DomainModule } from '../domain';
 
@@ -15,6 +16,7 @@ import { DomainModule } from '../domain';
     CategoryController,
     ProductController,
     OrderController,
+    OrderItemController,
   ],
 })
 export class ApplicationModule {}

@@ -1,6 +1,7 @@
 import { randomInt } from 'crypto';
-import { IsNotEmpty, IsOptional, IsArray } from 'class-validator';
-import { Product } from './product';
+import { IsNotEmpty, IsOptional } from 'class-validator';
+import { OrderItemDto } from './orderItem';
+import { Customer } from './customer';
 
 export class OrderDto {
   @IsOptional()
@@ -8,40 +9,38 @@ export class OrderDto {
 
   @IsNotEmpty()
   customerId: number;
-
-  @IsOptional()
-  @IsArray()
-  orderProducts?: Array<Product>;
+  @IsNotEmpty()
+  items?: Array<OrderItemDto>;
 
   @IsNotEmpty()
-  status?: string;
+  status?: Order['status'];
 }
 
 export class FilterOrderDto {
   @IsOptional()
   id?: number;
 
-  @IsNotEmpty()
-  customerId: number;
-
   @IsOptional()
-  @IsArray()
-  orderProducts?: Array<Product>;
+  ids?: Array<number>;
 
   @IsNotEmpty()
-  status?: string;
+  customerId?: number;
+
+  @IsNotEmpty()
+  status?: Order['status'];
 }
 
 export class Order {
-  id: number;
-  customerId: number;
-  orderProducts?: Array<Product>;
-  status?: string;
+  id?: number;
+  status: 'new' | 'confirmed' | 'inProgress' | 'finished' | 'canceled';
+  totalPrice: string;
+  customer: Customer;
+  // items: OrderItem[];
 
-  constructor(orderDto: OrderDto) {
+  constructor(orderDto: OrderDto, customer: Customer) {
     this.id = orderDto?.id || randomInt(999);
-    this.customerId = orderDto.customerId;
-    this.orderProducts = orderDto.orderProducts;
     this.status = orderDto.status;
+    this.customer = customer;
+    // this.items = items;
   }
 }

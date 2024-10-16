@@ -17,29 +17,36 @@ export class ProductInDbRepository implements IRepository<Product> {
       .save({
         name: product.name,
         price: product.price,
+        status: product.status,
+        category: product.category,
+
+        // TODO: implement following fields
+        // descricao: produtoEntity.descricao,
+        // imagemBase64: produtoEntity.imagemBase64,
       })
-      .then((productEntity) => {
-        return productEntity;
-      })
+      .then((productEntity) => productEntity)
       .catch((error) => {
         throw new Error(
-          `An error occurred while saving the product to the database: '${product}': ${error.message}`,
+          `An error occurred while saving the product to the database: '${JSON.stringify(product)}': ${error.message}`,
         );
       });
   }
 
   findAll(): Promise<Product[]> {
     return this.repository
-      .find()
+      .find({ relations: ['category'] })
       .then((produtoEntities) => {
         return produtoEntities.map((produtoEntity) => ({
           id: produtoEntity.id,
           name: produtoEntity.name,
           price: produtoEntity.price,
+          status: produtoEntity.status,
+          category: produtoEntity.category,
+
+          // TODO: implement following fields
           // ativo: produtoEntity.ativo,
           // descricao: produtoEntity.descricao,
           // imagemBase64: produtoEntity.imagemBase64,
-          // idCategoriaProduto: produtoEntity.idCategoriaProduto,
         }));
       })
       .catch((error) => {
@@ -51,16 +58,29 @@ export class ProductInDbRepository implements IRepository<Product> {
 
   find(filterProductDto: FilterProductDto): Promise<Product[]> {
     return this.repository
-      .findBy(filterProductDto)
+      .createQueryBuilder('product')
+      .where(
+        'product.categoryId = :categoryId or  product.id in (:productIds) ',
+        {
+          categoryId: filterProductDto.categoryId,
+          productIds: filterProductDto.ids?.length
+            ? filterProductDto.ids.join(',')
+            : null,
+        },
+      )
+      .getMany()
       .then((produtoEntities) => {
         return produtoEntities.map((produtoEntity) => ({
           id: produtoEntity.id,
           name: produtoEntity.name,
           price: produtoEntity.price,
+          status: produtoEntity.status,
+          category: produtoEntity.category,
+
+          // TODO: implement following fields
           // ativo: produtoEntity.ativo,
           // descricao: produtoEntity.descricao,
           // imagemBase64: produtoEntity.imagemBase64,
-          // idCategoriaProduto: produtoEntity.idCategoriaProduto,
         }));
       })
       .catch((error) => {
@@ -70,11 +90,26 @@ export class ProductInDbRepository implements IRepository<Product> {
       });
   }
 
-  async edit(): Promise<Product> {
+  findById(id: Product['id']): Promise<Product> {
+    return this.repository
+      .createQueryBuilder('product')
+      .where('product.id = :id', {
+        id,
+      })
+      .getOne()
+      .catch((error) => {
+        throw new Error(
+          `An error occurred while searching the product in the database: ${error.message}`,
+        );
+      });
+  }
+
+  async edit(product: Product): Promise<Product> {
+    console.log(product);
     throw new Error('Method not implemented.');
   }
 
-  async delete(): Promise<void> {
-    throw new Error('Method not implemented.');
+  async delete(id: Product['id']): Promise<void> {
+    throw new Error('Method not implemented.' + id);
   }
 }

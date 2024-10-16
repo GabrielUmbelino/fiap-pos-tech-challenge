@@ -1,26 +1,22 @@
-import { Order, OrderDto } from '../../../shared/models';
+import { Order } from '../../../shared/models';
 import { IRepository } from '../iRepository';
 
 export class MockOrderRepository implements IRepository<Order> {
   private readonly orders: Order[] = [];
 
-  async create(orderDto: OrderDto): Promise<Order> {
-    const createdOrder = new Order(orderDto);
-    this.orders.push(createdOrder);
-    return Promise.resolve(createdOrder);
+  async create(order: Order): Promise<Order> {
+    this.orders.push(order);
+    return Promise.resolve(order);
   }
 
   async findAll(): Promise<Order[]> {
     return Promise.resolve(this.orders);
   }
 
-  async find(filterOrderDto: OrderDto): Promise<Order[]> {
+  async find(orderDto: Order): Promise<Order[]> {
     const filteredOrders = this.orders.filter((order) => {
-      if (filterOrderDto.id && order.id === filterOrderDto.id) return true;
-      if (
-        filterOrderDto.customerId &&
-        order.customerId === filterOrderDto.customerId
-      )
+      if (orderDto.id && order.id === orderDto.id) return true;
+      if (orderDto.customer.id && order.customer.id === orderDto.customer.id)
         return true;
       return false;
     });
@@ -28,7 +24,7 @@ export class MockOrderRepository implements IRepository<Order> {
     return Promise.resolve(filteredOrders);
   }
 
-  async edit(orderDto: OrderDto): Promise<Order> {
+  async edit(orderDto: Order): Promise<Order> {
     const orderIndex = this.orders.findIndex(
       (order) => order.id === orderDto.id,
     );
