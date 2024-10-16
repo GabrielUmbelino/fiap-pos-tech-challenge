@@ -19,9 +19,13 @@ export class FilterProductDto {
   @IsOptional()
   id?: number;
   @IsOptional()
+  ids?: Array<number>;
+  @IsOptional()
   name?: string;
   @IsOptional()
   price?: string;
+  @IsOptional()
+  status?: 'available' | 'draft' | 'outOfStock' | 'deleted';
   @IsOptional()
   categoryId?: number;
 }

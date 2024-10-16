@@ -1,23 +1,30 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { OrderItemEntity } from './orderItem.entity';
+import { IRepository } from '../iRepository';
 import {
   FilterOrderItemDto,
   OrderItem,
 } from '../../../shared/models/orderItem';
-import { OrderItemEntity } from './orderItem.entity';
-import { IRepository } from '../iRepository';
+import { Order } from '../../../shared/models';
 
 @Injectable()
-export class OrderInDbRepository implements IRepository<OrderItem> {
+export class OrderItemInDbRepository implements IRepository<OrderItem> {
   constructor(
     @InjectRepository(OrderItemEntity)
     private repository: Repository<OrderItemEntity>,
   ) {}
+  create(): Promise<OrderItem> {
+    throw new Error('Method not implemented.');
+  }
 
-  create(orderItem: OrderItem): Promise<OrderItem> {
+  createFromDto(orderItem: OrderItem, order: Order): Promise<OrderItem> {
+    console.log('create orderItem');
+
     return this.repository
       .save({
+        order: order,
         quantity: orderItem.quantity,
         product: orderItem.product,
       })
@@ -39,19 +46,19 @@ export class OrderInDbRepository implements IRepository<OrderItem> {
       .then((orderItemEntities) => {
         return orderItemEntities.map((orderItemEntity) => ({
           id: orderItemEntity.id,
-          quantity: orderItemEntity.quantity,
           product: orderItemEntity.product,
+          quantity: orderItemEntity.quantity,
         }));
       })
       .catch((error) => {
         throw new Error(
-          `An error occurred while searching the customer in the database: '${JSON.stringify(filterOrderItemDto)}': ${error.message}`,
+          `An error occurred while searching the orderItem in the database: '${JSON.stringify(filterOrderItemDto)}': ${error.message}`,
         );
       });
   }
 
-  delete(): Promise<void> {
-    throw new Error('Method not implemented.');
+  delete(id): Promise<void> {
+    throw new Error('Method not implemented.' + id);
   }
 
   edit(): Promise<OrderItem> {

@@ -10,7 +10,6 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiQuery } from '@nestjs/swagger';
 import {
   Category,
   FilterProductDto,
@@ -29,26 +28,12 @@ export class ProductController {
 
   @Get()
   findAll(): Promise<Product[]> {
+    console.log('find all');
     return this.productService.findAll();
   }
 
-  @ApiQuery({
-    name: 'id',
-    type: Number,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'name',
-    type: String,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'price',
-    type: Number,
-    required: false,
-  })
-  @Get(':categoryId')
-  find(@Query('categoryId') categoryId?: number): Promise<Product[]> {
+  @Get('category/:categoryId')
+  find(@Param('categoryId') categoryId?: number): Promise<Product[]> {
     const filterProductDto: FilterProductDto = {
       categoryId,
     };

@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IRepository } from '../../../infrastructure/repositories/iRepository';
 import { Customer } from '../../../shared/models/customer';
 import { IService } from '../../iService';
+import { CustomerInDbRepository } from '../../../infrastructure/repositories/customer';
 
 @Injectable()
 export class CustomerService implements IService<Customer> {
   constructor(
     @Inject('IRepository<Customer>')
-    private readonly customerRepository: IRepository<Customer>,
+    private readonly customerRepository: CustomerInDbRepository,
   ) {}
 
   create(customer: Customer): Promise<Customer> {
@@ -18,15 +18,19 @@ export class CustomerService implements IService<Customer> {
     return this.customerRepository.findAll();
   }
 
-  find(partialCustomer: Partial<Customer>): Promise<Customer[]> {
-    return this.customerRepository.find(partialCustomer);
+  findById(customerId: number): Promise<Customer> {
+    return this.customerRepository.findById(customerId);
   }
 
-  edit(customer: Customer): Promise<Customer> {
-    return this.customerRepository.edit(customer);
+  find(): Promise<Customer[]> {
+    throw new Error('Method not implemented.');
   }
 
-  delete(id: number): Promise<void> {
-    return this.customerRepository.delete(id);
+  edit(): Promise<Customer> {
+    throw new Error('Method not implemented.');
+  }
+
+  delete(): Promise<void> {
+    throw new Error('Method not implemented.');
   }
 }

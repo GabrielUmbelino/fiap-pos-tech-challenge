@@ -13,6 +13,7 @@ export class CustomerEntity {
 
   @Column({ name: 'PHONE_NUMBER' })
   phoneNumber: string;
+
   @Column({ name: 'EMAIL' })
   email: string;
 }

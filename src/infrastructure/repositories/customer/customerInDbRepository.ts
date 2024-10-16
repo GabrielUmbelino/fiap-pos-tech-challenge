@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Customer, FilterCustomerDto } from '../../../shared/models';
+import { Customer } from '../../../shared/models';
 import { CustomerEntity } from './customer.entity';
 import { IRepository } from '../iRepository';
 
@@ -18,6 +18,7 @@ export class CustomerInDbRepository implements IRepository<Customer> {
         name: customer.name,
         document: customer.document,
         phoneNumber: customer.phoneNumber,
+        email: customer.email,
       })
       .then((customerEntity) => {
         return new Customer({
@@ -25,6 +26,7 @@ export class CustomerInDbRepository implements IRepository<Customer> {
           name: customerEntity.name,
           document: customerEntity.document,
           phoneNumber: customerEntity.phoneNumber,
+          email: customerEntity.email,
         });
       })
       .catch((error) => {
@@ -35,12 +37,9 @@ export class CustomerInDbRepository implements IRepository<Customer> {
   }
 
   findAll(): Promise<Customer[]> {
-    throw new Error('Method not implemented.');
-  }
-
-  find(customerDto: FilterCustomerDto): Promise<Customer[]> {
     return this.repository
-      .findBy(customerDto)
+      .createQueryBuilder('customer')
+      .getMany()
       .then((customerEntities) => {
         return customerEntities.map(
           (customerEntity) =>
@@ -54,7 +53,23 @@ export class CustomerInDbRepository implements IRepository<Customer> {
       })
       .catch((error) => {
         throw new Error(
-          `An error occurred while searching the customer in the database: '${JSON.stringify(customerDto)}': ${error.message}`,
+          `An error occurred while searching the customer in the database: ${error.message}`,
+        );
+      });
+  }
+
+  find(): Promise<Customer[]> {
+    throw new Error('Method not implemented.');
+  }
+
+  findById(customerId: number): Promise<Customer> {
+    return this.repository
+      .createQueryBuilder('customer')
+      .where('customer.id = :id', { id: customerId })
+      .getOne()
+      .catch((error) => {
+        throw new Error(
+          `An error occurred while searching the customer in the database: '${JSON.stringify(customerId)}': ${error.message}`,
         );
       });
   }

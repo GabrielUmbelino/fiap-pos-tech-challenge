@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IRepository } from '../../../infrastructure/repositories/iRepository';
 import { FilterProductDto, Product } from '../../../shared/models';
 import { IService } from '../../iService';
+import { ProductInDbRepository } from '../../../infrastructure/repositories/product';
 
 @Injectable()
 export class ProductService implements IService<Product> {
   constructor(
     @Inject('IRepository<Product>')
-    private readonly productRepository: IRepository<Product>,
+    private readonly productRepository: ProductInDbRepository,
   ) {}
 
   create(productDto: Product): Promise<Product> {
@@ -20,6 +20,10 @@ export class ProductService implements IService<Product> {
 
   find(filterProductDto: FilterProductDto): Promise<Product[]> {
     return this.productRepository.find(filterProductDto);
+  }
+
+  findById(id: Product['id']): Promise<Product> {
+    return this.productRepository.findById(id);
   }
 
   edit(productDto: Product): Promise<Product> {

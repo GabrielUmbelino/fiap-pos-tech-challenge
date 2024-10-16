@@ -10,9 +10,12 @@ export class OrderItemEntity {
   @Column({ name: 'QUANTITY' })
   quantity: number;
 
+  @Column({ name: 'PRODUCT_PRICE', nullable: true })
+  productPrice?: string;
+
   @ManyToOne(() => ProductEntity, (product) => product, { cascade: true })
   product: ProductEntity;
 
   @ManyToOne(() => OrderEntity, (order) => order.items, { cascade: true })
-  order: ProductEntity;
+  order: OrderEntity;
 }

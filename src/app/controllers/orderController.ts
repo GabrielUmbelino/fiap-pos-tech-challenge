@@ -8,20 +8,15 @@ import {
   Param,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
 import { ApiQuery } from '@nestjs/swagger';
-import { CustomerService, OrderService, ProductService } from '../../domain';
-import { Order, OrderDto, FilterOrderDto } from '../../shared/models';
+import { Order, OrderDto } from '../../shared/models';
+import { OrderService } from '../../domain';
 
 @Controller('order')
 export class OrderController {
   private readonly logger = new Logger(OrderController.name);
-  constructor(
-    @Inject('IService<Order>') private orderService: OrderService,
-    @Inject('IService<Product>') private productService: ProductService,
-    @Inject('IService<Customer>') private customerService: CustomerService,
-  ) {}
+  constructor(@Inject('IService<Order>') private orderService: OrderService) {}
 
   @Get()
   findAll(): Promise<Order[]> {
@@ -44,36 +39,29 @@ export class OrderController {
     required: true,
   })
   @Get(':params')
-  find(
-    @Query('id') id?: number,
-    @Query('customerId') customerId?: number,
-    @Query('status') status?: Order['status'],
-  ): Promise<Order[]> {
-    const filterOrderDto: FilterOrderDto = {
-      id,
-      customerId,
-      status,
-    };
+  find() // @Query('id') id?: number,
+  // @Query('customerId') customerId?: number,
+  // @Query('status') status?: Order['status'],
+  : Promise<Order[]> {
+    // const filterOrderDto: FilterOrderDto = {
+    //   id,
+    //   customerId,
+    //   status,
+    // };
 
-    return this.orderService.find(filterOrderDto);
+    return this.orderService.findAll();
   }
 
   @Post()
   async create(@Body() orderDto: OrderDto): Promise<Order> {
-    const customer = this.customerService.find({ id: orderDto.customerId });
-
-    const order = {
-      status: orderDto.status,
-      customer,
-    };
-    const createdOrder = await this.orderService.create(order);
+    const createdOrder = await this.orderService.createFromDto(orderDto);
     this.logger.debug({ createdOrder });
-    return order;
+    return createdOrder;
   }
 
   @Put(':id')
   async put(@Body() orderDto: OrderDto): Promise<Order> {
-    const updatedOrder = await this.orderService.edit(orderDto as Order);
+    const updatedOrder = await this.orderService.editFromDto(orderDto);
     this.logger.debug(`Updated order: ${JSON.stringify(updatedOrder)}`);
     return updatedOrder;
   }
