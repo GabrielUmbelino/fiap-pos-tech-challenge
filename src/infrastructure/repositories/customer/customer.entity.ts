@@ -1,19 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
+import { UserEntity } from '../user';
 
 @Entity({ name: 'Customer' })
 export class CustomerEntity {
-  @PrimaryGeneratedColumn({ name: 'ID' })
+  @PrimaryColumn()
+  @OneToOne(() => UserEntity, (user) => user.id)
+  @JoinColumn({ name: 'id' })
   id: number;
 
-  @Column({ name: 'NAME' })
+  @Column({ name: 'name' })
   name: string;
 
-  @Column({ name: 'DOCUMENT' })
+  @Column({ name: 'document' })
   document: string;
 
-  @Column({ name: 'PHONE_NUMBER' })
+  @Column({ name: 'phone_number' })
   phoneNumber: string;
 
-  @Column({ name: 'EMAIL' })
+  @Column({ name: 'email' })
   email: string;
 }
