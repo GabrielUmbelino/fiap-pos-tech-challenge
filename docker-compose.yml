@@ -1,3 +1,11 @@
+volumes:
+  # Volume para armazenar arquivos do banco de dados.
+  db_data:
+
+networks:
+  # Rede interna entre os containers.
+  internal:
+
 services:
   # Container com a API baseada em NestJS.
   api:
@@ -8,11 +16,48 @@ services:
       # Arquivo de definição da imagem do container.
       dockerfile: docker/api/Dockerfile
     ports:
-      # Expondo aplicação na porta 5000.
-      - "5000:5000"
+      # Expondo aplicação na porta especificada na variável de ambiente PORT.
+      - "${PORT}:${PORT}"
+    environment:
+      PORT: "${PORT}"
+      ENV: "${ENV}"
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DATABASE: "${POSTGRES_DATABASE}"
+    restart: unless-stopped
+    networks:
+      - internal
+    depends_on:
+      # Espera até que o banco de dados esteja pronto para receber requisições para iniciar a aplicação.
+      db:
+        condition: service_healthy
     # Define health check simples que só testa se o endpoint padrão está respondendo requisições.
     healthcheck:
-      test: curl -k -f http://localhost:5000
+      test: "curl -k -f http://localhost:${PORT}"
       interval: 10s
       timeout: 10s
       retries: 10
+  db:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "${POSTGRES_DATABASE}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    # Se você quer acessar o banco de dados por uma ferramenta externa, descomente as duas linhas seguintes para exportar o
+    # postgres na porta 5432 do host (ou ajuste a porta que deseja mapear do host).
+    ports:
+      - "5432:5432"
+    networks:
+      - internal
+    volumes:
+      # Monta volume para a pasta de dados do postgresql.
+      - db_data:/var/lib/postgresql/data
+    # Define health check quer verifica se o banco de dados está pronto para receber requisições.
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE}'" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
