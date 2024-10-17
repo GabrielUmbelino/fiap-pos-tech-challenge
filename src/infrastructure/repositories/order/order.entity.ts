@@ -5,7 +5,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { CustomerEntity } from '../customer';
+import { CustomerEntity, GuestEntity } from '../customer';
 import { OrderItemEntity } from '../orderItem';
 
 @Entity({ name: 'Order' })
@@ -20,7 +20,7 @@ export class OrderEntity {
   totalPrice: string;
 
   @ManyToOne(() => CustomerEntity, (customer) => customer, { cascade: true })
-  customer: CustomerEntity;
+  customer: CustomerEntity | GuestEntity;
 
   @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.order)
   items: OrderItemEntity[];
