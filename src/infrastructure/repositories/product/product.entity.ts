@@ -3,24 +3,26 @@ import { CategoryEntity } from '../category';
 
 @Entity({ name: 'Product' })
 export class ProductEntity {
-  @PrimaryGeneratedColumn({ name: 'ID' })
+  @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
-  @ManyToOne(() => CategoryEntity, (category) => category, { cascade: true })
+  @ManyToOne(() => CategoryEntity, (category) => category, {
+    cascade: true,
+  })
   category: CategoryEntity;
 
-  @Column({ name: 'NAME' })
+  @Column({ name: 'name' })
   name: string;
 
-  @Column({ name: 'PRICE' })
+  @Column({ name: 'price' })
   price: string;
 
-  @Column({ name: 'STATUS' })
+  @Column({ name: 'status' })
   status: 'available' | 'draft' | 'outOfStock' | 'deleted';
 
-  @Column({ name: 'DESCRIPTION', nullable: true })
+  @Column({ name: 'description', nullable: true })
   description: string;
 
-  @Column({ name: 'IMAGE', nullable: true })
+  @Column({ name: 'image', nullable: true })
   imageBase64: string;
 }
