@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Customer, CustomerDto } from '../../../shared/models/customer';
 import { IService } from '../../iService';
 import { CustomerInDbRepository } from '../../../infrastructure/repositories/customer';
-import { User } from '../../../shared/models/user';
 import { UserInDbRepository } from '../../../infrastructure/repositories/user';
+import { User } from '../../../shared/models';
 
 @Injectable()
 export class CustomerService implements IService<Customer> {
@@ -13,8 +13,13 @@ export class CustomerService implements IService<Customer> {
     @Inject('IRepository<User>')
     private readonly userRepository: UserInDbRepository,
   ) {}
+  create(): Promise<Customer> {
+    throw new Error('Method not implemented.');
+  }
 
-  async create(customerDto: CustomerDto): Promise<Customer | User> {
+  async createUserAndCustomer(
+    customerDto: CustomerDto,
+  ): Promise<Customer | User> {
     const user = await this.userRepository.create();
     if (!customerDto?.document?.length) return user;
 

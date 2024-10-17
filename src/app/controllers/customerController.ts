@@ -52,7 +52,8 @@ export class CustomerController {
 
   @Post()
   async create(@Body() customerDto: CustomerDto): Promise<Customer | User> {
-    const customer = await this.customerService.create(customerDto);
+    const customer =
+      await this.customerService.createUserAndCustomer(customerDto);
     this.logger.debug(customerDto);
     this.logger.debug({ customer });
     return customer;
