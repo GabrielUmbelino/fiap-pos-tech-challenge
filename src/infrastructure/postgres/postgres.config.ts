@@ -8,6 +8,7 @@ import { ProductEntity } from '../repositories/product';
 import { CategoryEntity } from '../repositories/category';
 import { OrderEntity } from '../repositories/order';
 import { OrderItemEntity } from '../repositories/orderItem';
+import { UserEntity } from '../repositories/user';
 
 dotenvConfig({ path: process.cwd() + '/envs/.env.local' });
 
@@ -30,6 +31,7 @@ dotenvConfig({ path: process.cwd() + '/envs/.env.local' });
             CategoryEntity,
             OrderEntity,
             OrderItemEntity,
+            UserEntity,
           ],
           synchronize: DatabaseConstants.DATABASE_SYNCHRONIZE,
           logging: DatabaseConstants.DATABASE_LOGGING,
