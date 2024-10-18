@@ -4,13 +4,13 @@ import { OrderEntity } from '../order/order.entity';
 
 @Entity({ name: 'OrderItem' })
 export class OrderItemEntity {
-  @PrimaryGeneratedColumn({ name: 'ID' })
+  @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
-  @Column({ name: 'QUANTITY' })
+  @Column({ name: 'quantity' })
   quantity: number;
 
-  @Column({ name: 'PRODUCT_PRICE', nullable: true })
+  @Column({ name: 'product_price', nullable: true })
   productPrice?: string;
 
   @ManyToOne(() => ProductEntity, (product) => product, { cascade: true })

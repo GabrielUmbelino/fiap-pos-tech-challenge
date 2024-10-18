@@ -9,13 +9,12 @@ export class ProductService implements IService<Product> {
     @Inject('IRepository<Product>')
     private readonly productRepository: ProductInDbRepository,
   ) {}
+  findAll(): Promise<Product[]> {
+    throw new Error('Method not implemented.');
+  }
 
   create(productDto: Product): Promise<Product> {
     return this.productRepository.create(productDto);
-  }
-
-  findAll(): Promise<Product[]> {
-    return this.productRepository.findAll();
   }
 
   find(filterProductDto: FilterProductDto): Promise<Product[]> {

@@ -4,6 +4,8 @@ import { IRepository } from '../iRepository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from './product.entity';
 import { Repository } from 'typeorm';
+import { Category } from '../../../shared/models';
+import { CategoryEntity } from '../category';
 
 @Injectable()
 export class ProductInDbRepository implements IRepository<Product> {
@@ -11,6 +13,10 @@ export class ProductInDbRepository implements IRepository<Product> {
     @InjectRepository(ProductEntity)
     private repository: Repository<ProductEntity>,
   ) {}
+
+  findAll(): Promise<Product[]> {
+    throw new Error('Method not implemented.');
+  }
 
   create(product: Product): Promise<Product> {
     return this.repository
@@ -32,60 +38,23 @@ export class ProductInDbRepository implements IRepository<Product> {
       });
   }
 
-  findAll(): Promise<Product[]> {
-    return this.repository
-      .find({ relations: ['category'] })
-      .then((produtoEntities) => {
-        return produtoEntities.map((produtoEntity) => ({
-          id: produtoEntity.id,
-          name: produtoEntity.name,
-          price: produtoEntity.price,
-          status: produtoEntity.status,
-          category: produtoEntity.category,
-
-          // TODO: implement following fields
-          // ativo: produtoEntity.ativo,
-          // descricao: produtoEntity.descricao,
-          // imagemBase64: produtoEntity.imagemBase64,
-        }));
-      })
-      .catch((error) => {
-        throw new Error(
-          `An error occurred while searching the products in the database: ${error.message}`,
-        );
-      });
-  }
-
   find(filterProductDto: FilterProductDto): Promise<Product[]> {
+    let whereClause = '';
+
+    if (filterProductDto.categoryId) {
+      whereClause = 'product.categoryId = :categoryId';
+    }
+
     return this.repository
       .createQueryBuilder('product')
-      .where(
-        'product.categoryId = :categoryId or  product.id in (:productIds) ',
-        {
-          categoryId: filterProductDto.categoryId,
-          productIds: filterProductDto.ids?.length
-            ? filterProductDto.ids.join(',')
-            : null,
-        },
-      )
-      .getMany()
-      .then((produtoEntities) => {
-        return produtoEntities.map((produtoEntity) => ({
-          id: produtoEntity.id,
-          name: produtoEntity.name,
-          price: produtoEntity.price,
-          status: produtoEntity.status,
-          category: produtoEntity.category,
-
-          // TODO: implement following fields
-          // ativo: produtoEntity.ativo,
-          // descricao: produtoEntity.descricao,
-          // imagemBase64: produtoEntity.imagemBase64,
-        }));
+      .leftJoinAndSelect('product.category', 'category')
+      .where(whereClause, {
+        categoryId: filterProductDto.categoryId,
       })
+      .getMany()
       .catch((error) => {
         throw new Error(
-          `An error occurred while searching the product in the database: '${JSON.stringify(filterProductDto)}': ${error.message}`,
+          `An error occurred while searching the product in the database: ${error.message}`,
         );
       });
   }

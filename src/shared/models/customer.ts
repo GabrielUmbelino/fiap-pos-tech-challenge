@@ -28,7 +28,7 @@ export class FilterCustomerDto {
 }
 
 export class Customer {
-  id: number;
+  id?: number;
   name: string;
   document: string;
   phoneNumber: string;
