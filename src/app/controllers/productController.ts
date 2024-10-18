@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import {
   Category,
@@ -16,28 +17,26 @@ import {
   ProductDto,
 } from '../../shared/models';
 import { IService } from '../../domain/iService';
+import { ProductService } from '../../domain';
 
 @Controller('product')
 export class ProductController {
   private readonly logger = new Logger(ProductController.name);
   constructor(
-    @Inject('IService<Product>') private productService: IService<Product>,
+    @Inject('IService<Product>') private productService: ProductService,
     @Inject('IService<Category>') private categoryService: IService<Category>,
   ) {}
 
   @Get()
-  findAll(): Promise<Product[]> {
-    console.log('find all');
-    return this.productService.findAll();
+  find(@Query() filterProductDto: FilterProductDto): Promise<Product[]> {
+    console.log('find all', filterProductDto);
+    return this.productService.find(filterProductDto);
   }
 
-  @Get('category/:categoryId')
-  find(@Param('categoryId') categoryId?: number): Promise<Product[]> {
-    const filterProductDto: FilterProductDto = {
-      categoryId,
-    };
-
-    return this.productService.find(filterProductDto);
+  @Get(':id')
+  findById(@Param('id') id?: number): Promise<Product> {
+    console.log('findById');
+    return this.productService.findById(id);
   }
 
   @Post()
