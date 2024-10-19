@@ -1,7 +1,8 @@
 import { randomInt } from 'crypto';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { OrderItemDto } from './orderItem';
-import { Customer } from './customer';
+import { OrderItem, OrderItemDto } from './orderItem';
+import { OrderStatusEnum } from '../enums';
+import { User } from './user';
 
 export class OrderDto {
   @IsOptional()
@@ -9,10 +10,14 @@ export class OrderDto {
 
   @IsNotEmpty()
   customerId: number;
-  @IsNotEmpty()
+
+  @IsOptional()
+  totalPrice: string;
+
+  @IsOptional()
   items?: Array<OrderItemDto>;
 
-  @IsNotEmpty()
+  @IsOptional()
   status?: Order['status'];
 }
 
@@ -23,24 +28,24 @@ export class FilterOrderDto {
   @IsOptional()
   ids?: Array<number>;
 
-  @IsNotEmpty()
+  @IsOptional()
   customerId?: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   status?: Order['status'];
 }
 
 export class Order {
   id?: number;
-  status: 'new' | 'confirmed' | 'inProgress' | 'finished' | 'canceled';
+  status: OrderStatusEnum;
   totalPrice: string;
-  customer: Customer;
-  // items: OrderItem[];
+  user: User;
+  items: OrderItem[];
 
-  constructor(orderDto: OrderDto, customer: Customer) {
+  constructor(orderDto: OrderDto, user: User) {
     this.id = orderDto?.id || randomInt(999);
     this.status = orderDto.status;
-    this.customer = customer;
-    // this.items = items;
+    this.user = user;
+    this.items = [];
   }
 }

@@ -1,6 +1,7 @@
 import { randomInt } from 'crypto';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Category } from './category';
+import { ProductStatusEnum } from '../enums';
 
 export class ProductDto {
   @IsOptional()
@@ -10,7 +11,7 @@ export class ProductDto {
   @IsNotEmpty()
   price: string;
   @IsNotEmpty()
-  status: 'available' | 'draft' | 'outOfStock' | 'deleted';
+  status: Product['status'];
   @IsNotEmpty()
   categoryId: number;
 }
@@ -25,7 +26,7 @@ export class FilterProductDto {
   @IsOptional()
   price?: string;
   @IsOptional()
-  status?: 'available' | 'draft' | 'outOfStock' | 'deleted';
+  status?: Product['status'];
   @IsOptional()
   categoryId?: number;
 }
@@ -34,7 +35,7 @@ export class Product {
   id?: number;
   name: string;
   price: string;
-  status: 'available' | 'draft' | 'outOfStock' | 'deleted';
+  status: ProductStatusEnum;
   category: Category;
 
   constructor(productDto: ProductDto, category: Category) {

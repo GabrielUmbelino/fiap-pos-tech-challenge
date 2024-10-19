@@ -2,6 +2,12 @@ import { Category, CategoryDto } from '../../../shared/models';
 import { IRepository } from '../iRepository';
 
 export class MockCategoryRepository implements IRepository<Category> {
+  find(): Promise<Category[]> {
+    throw new Error('Method not implemented.');
+  }
+  findById(): Promise<Category> {
+    throw new Error('Method not implemented.');
+  }
   private readonly categorys: Category[] = [];
 
   async create(categoryDto: CategoryDto): Promise<Category> {
@@ -12,18 +18,6 @@ export class MockCategoryRepository implements IRepository<Category> {
 
   async findAll(): Promise<Category[]> {
     return Promise.resolve(this.categorys);
-  }
-
-  async find(filterCategoryDto: CategoryDto): Promise<Category[]> {
-    const filteredCategories = this.categorys.filter((category) => {
-      if (filterCategoryDto.id && category.id === filterCategoryDto.id)
-        return true;
-      if (filterCategoryDto.name && category.name === filterCategoryDto.name)
-        return true;
-      return false;
-    });
-
-    return Promise.resolve(filteredCategories);
   }
 
   async edit(categoryDto: CategoryDto): Promise<Category> {

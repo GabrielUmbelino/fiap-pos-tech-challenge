@@ -11,6 +11,12 @@ import { IRepository } from '../iRepository';
  */
 @Injectable()
 export class CategoryInMemory implements IRepository<Category> {
+  find(): Promise<Category[]> {
+    throw new Error('Method not implemented.');
+  }
+  findById(): Promise<Category> {
+    throw new Error('Method not implemented.');
+  }
   private readonly categories: Category[] = [];
 
   create(categoryDto: CategoryDto): Promise<Category> {
@@ -21,17 +27,6 @@ export class CategoryInMemory implements IRepository<Category> {
 
   findAll(): Promise<Category[]> {
     return Promise.resolve(this.categories);
-  }
-
-  find(filterCategoryDto: FilterCategoryDto): Promise<Category[]> {
-    const filteredCategories = this.categories.filter((category) => {
-      if (filterCategoryDto.id && category.id === filterCategoryDto.id)
-        return true;
-      if (filterCategoryDto.name && category.name === filterCategoryDto.name)
-        return true;
-      return false;
-    });
-    return Promise.resolve(filteredCategories);
   }
 
   async edit(categoryDto: CategoryDto): Promise<Category> {

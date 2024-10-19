@@ -1,8 +1,8 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category, FilterCategoryDto } from '../../../shared/models';
-import { CategoryEntity } from './category.entity';
+import { Category } from '../../../shared/models';
+import { CategoryEntity } from './categoryEntity';
 import { IRepository } from '../iRepository';
 
 @Injectable()
@@ -11,6 +11,18 @@ export class CategoryInDbRepository implements IRepository<Category> {
     @InjectRepository(CategoryEntity)
     private repository: Repository<CategoryEntity>,
   ) {}
+
+  findById(id: number): Promise<Category> {
+    return this.repository
+      .createQueryBuilder('category')
+      .where('category.id = :id', { id: id })
+      .getOne()
+      .catch((error) => {
+        throw new Error(
+          `An error occurred while searching the category in the database: '${JSON.stringify(id)}': ${error.message}`,
+        );
+      });
+  }
 
   create(category: Category): Promise<Category> {
     return this.repository
@@ -49,23 +61,14 @@ export class CategoryInDbRepository implements IRepository<Category> {
       });
   }
 
-  find(categoryDto: FilterCategoryDto): Promise<Category[]> {
+  find(id: number): Promise<Category[]> {
     return this.repository
       .createQueryBuilder('category')
-      .where('category.id = :id', { id: categoryDto.id })
+      .where('category.id = :id', { id: id })
       .getMany()
-      .then((categoryEntities) => {
-        return categoryEntities.map(
-          (categoryEntity) =>
-            new Category({
-              id: categoryEntity.id,
-              name: categoryEntity.name,
-            }),
-        );
-      })
       .catch((error) => {
         throw new Error(
-          `An error occurred while searching the category in the database: '${JSON.stringify(categoryDto)}': ${error.message}`,
+          `An error occurred while searching the category in the database: '${JSON.stringify(id)}': ${error.message}`,
         );
       });
   }

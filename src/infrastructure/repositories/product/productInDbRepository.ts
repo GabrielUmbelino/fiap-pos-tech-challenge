@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { FilterProductDto, Product } from '../../../shared/models/product';
+import { Product } from '../../../shared/models/product';
 import { IRepository } from '../iRepository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductEntity } from './product.entity';
+import { ProductEntity } from './productEntity';
 import { Repository } from 'typeorm';
-import { Category } from '../../../shared/models';
-import { CategoryEntity } from '../category';
 
 @Injectable()
 export class ProductInDbRepository implements IRepository<Product> {
@@ -18,18 +16,9 @@ export class ProductInDbRepository implements IRepository<Product> {
     throw new Error('Method not implemented.');
   }
 
-  create(product: Product): Promise<Product> {
+  async create(product: Product): Promise<Product> {
     return this.repository
-      .save({
-        name: product.name,
-        price: product.price,
-        status: product.status,
-        category: product.category,
-
-        // TODO: implement following fields
-        // descricao: produtoEntity.descricao,
-        // imagemBase64: produtoEntity.imagemBase64,
-      })
+      .save(product)
       .then((productEntity) => productEntity)
       .catch((error) => {
         throw new Error(
@@ -38,10 +27,10 @@ export class ProductInDbRepository implements IRepository<Product> {
       });
   }
 
-  find(filterProductDto: FilterProductDto): Promise<Product[]> {
+  find(categoryId: number): Promise<Product[]> {
     let whereClause = '';
 
-    if (filterProductDto.categoryId) {
+    if (categoryId) {
       whereClause = 'product.categoryId = :categoryId';
     }
 
@@ -49,7 +38,7 @@ export class ProductInDbRepository implements IRepository<Product> {
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.category', 'category')
       .where(whereClause, {
-        categoryId: filterProductDto.categoryId,
+        categoryId,
       })
       .getMany()
       .catch((error) => {
@@ -59,7 +48,7 @@ export class ProductInDbRepository implements IRepository<Product> {
       });
   }
 
-  findById(id: Product['id']): Promise<Product> {
+  findById(id: number): Promise<Product> {
     return this.repository
       .createQueryBuilder('product')
       .where('product.id = :id', {
@@ -73,8 +62,7 @@ export class ProductInDbRepository implements IRepository<Product> {
       });
   }
 
-  async edit(product: Product): Promise<Product> {
-    console.log(product);
+  async edit(): Promise<Product> {
     throw new Error('Method not implemented.');
   }
 

@@ -7,6 +7,12 @@ import { FilterOrderDto, Order } from '../../../shared/models';
  */
 @Injectable()
 export class OrderInMemory implements IRepository<Order> {
+  find(): Promise<Order[]> {
+    throw new Error('Method not implemented.');
+  }
+  findById(): Promise<Order> {
+    throw new Error('Method not implemented.');
+  }
   private readonly orders: Order[] = [];
 
   create(order: Order): Promise<Order> {
@@ -16,19 +22,6 @@ export class OrderInMemory implements IRepository<Order> {
 
   findAll(): Promise<Order[]> {
     return Promise.resolve(this.orders);
-  }
-
-  find(filterOrderDto: FilterOrderDto): Promise<Order[]> {
-    const filteredOrders = this.orders.filter((order) => {
-      if (filterOrderDto.id && order.id === filterOrderDto.id) return true;
-      if (
-        filterOrderDto.customerId &&
-        order.customer.id === filterOrderDto.customerId
-      )
-        return true;
-      return false;
-    });
-    return Promise.resolve(filteredOrders);
   }
 
   async edit(orderDto: Order): Promise<Order> {

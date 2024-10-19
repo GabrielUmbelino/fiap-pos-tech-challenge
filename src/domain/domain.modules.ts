@@ -5,6 +5,7 @@ import {
   CategoryService,
   OrderService,
   OrderItemService,
+  PaymentService,
 } from './services';
 
 @Module({
@@ -14,6 +15,7 @@ import {
     { provide: 'IService<Category>', useClass: CategoryService },
     { provide: 'IService<Order>', useClass: OrderService },
     { provide: 'IService<OrderItem>', useClass: OrderItemService },
+    { provide: 'IPaymentService', useClass: PaymentService },
   ],
   exports: [
     { provide: 'IService<Customer>', useClass: CustomerService },
@@ -21,6 +23,7 @@ import {
     { provide: 'IService<Category>', useClass: CategoryService },
     { provide: 'IService<Order>', useClass: OrderService },
     { provide: 'IService<OrderItem>', useClass: OrderItemService },
+    { provide: 'IPaymentService', useClass: PaymentService },
   ],
 })
 export class DomainModule {}

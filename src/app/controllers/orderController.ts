@@ -1,3 +1,4 @@
+import { OrderStatusEnum } from './../../shared/enums/OrderStatusEnum';
 import {
   Body,
   Controller,
@@ -10,13 +11,15 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiQuery } from '@nestjs/swagger';
+import { IService } from '../../domain/iService';
 import { Order, OrderDto } from '../../shared/models';
-import { OrderService } from '../../domain';
 
 @Controller('order')
 export class OrderController {
   private readonly logger = new Logger(OrderController.name);
-  constructor(@Inject('IService<Order>') private orderService: OrderService) {}
+  constructor(
+    @Inject('IService<Order>') private orderService: IService<Order>,
+  ) {}
 
   @Get()
   findAll(): Promise<Order[]> {
@@ -39,36 +42,43 @@ export class OrderController {
     required: true,
   })
   @Get(':params')
-  find() // @Query('id') id?: number,
-  // @Query('customerId') customerId?: number,
-  // @Query('status') status?: Order['status'],
-  : Promise<Order[]> {
-    // const filterOrderDto: FilterOrderDto = {
-    //   id,
-    //   customerId,
-    //   status,
-    // };
-
+  find(): Promise<Order[]> {
     return this.orderService.findAll();
+  }
+
+  @Get(':id')
+  findById(@Param('id') id?: number): Promise<Order> {
+    return this.orderService.findById(id);
+  }
+
+  @Put('/confirm/:id')
+  confirmOrder(@Param('id') id?: number): Promise<Order> {
+    return this.orderService.edit({ id, status: OrderStatusEnum.CONFIRMED });
+  }
+
+  @Put('/in-progress/:id')
+  orderInProgres(@Param('id') id?: number): Promise<Order> {
+    return this.orderService.edit({ id, status: OrderStatusEnum.IN_PROGRESS });
+  }
+
+  @Put('/finish/:id')
+  finishOrder(@Param('id') id?: number): Promise<Order> {
+    return this.orderService.edit({ id, status: OrderStatusEnum.FINISHED });
+  }
+
+  @Put('/cancel/:id')
+  cancelOrder(@Param('id') id?: number): Promise<Order> {
+    return this.orderService.edit({ id, status: OrderStatusEnum.CANCELED });
   }
 
   @Post()
   async create(@Body() orderDto: OrderDto): Promise<Order> {
-    const createdOrder = await this.orderService.createFromDto(orderDto);
-    this.logger.debug({ createdOrder });
+    const createdOrder = await this.orderService.create(orderDto);
     return createdOrder;
-  }
-
-  @Put(':id')
-  async put(@Body() orderDto: OrderDto): Promise<Order> {
-    const updatedOrder = await this.orderService.editFromDto(orderDto);
-    this.logger.debug(`Updated order: ${JSON.stringify(updatedOrder)}`);
-    return updatedOrder;
   }
 
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<void> {
     await this.orderService.delete(id);
-    this.logger.debug(`Deleted order with id: ${id}`);
   }
 }

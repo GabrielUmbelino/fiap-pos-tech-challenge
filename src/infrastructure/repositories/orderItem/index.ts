@@ -1,2 +1,2 @@
-export * from './orderItem.entity';
+export * from './orderItemEntity';
 export * from './orderItemInDbRepository';

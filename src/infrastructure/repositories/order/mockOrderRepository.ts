@@ -2,6 +2,12 @@ import { Order } from '../../../shared/models';
 import { IRepository } from '../iRepository';
 
 export class MockOrderRepository implements IRepository<Order> {
+  find(): Promise<Order[]> {
+    throw new Error('Method not implemented.');
+  }
+  findById(): Promise<Order> {
+    throw new Error('Method not implemented.');
+  }
   private readonly orders: Order[] = [];
 
   async create(order: Order): Promise<Order> {
@@ -11,17 +17,6 @@ export class MockOrderRepository implements IRepository<Order> {
 
   async findAll(): Promise<Order[]> {
     return Promise.resolve(this.orders);
-  }
-
-  async find(orderDto: Order): Promise<Order[]> {
-    const filteredOrders = this.orders.filter((order) => {
-      if (orderDto.id && order.id === orderDto.id) return true;
-      if (orderDto.customer.id && order.customer.id === orderDto.customer.id)
-        return true;
-      return false;
-    });
-
-    return Promise.resolve(filteredOrders);
   }
 
   async edit(orderDto: Order): Promise<Order> {
