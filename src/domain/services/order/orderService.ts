@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Order, OrderDto } from '../../../shared/models';
+import { Customer, Order, OrderDto } from '../../../shared/models';
 import { IService } from '../../iService';
-import { CustomerService } from '../customer';
 import { OrderStatusEnum } from '../../../shared';
 import { IRepository } from '../../../infrastructure/repositories/iRepository';
 
@@ -10,11 +9,11 @@ export class OrderService implements IService<Order> {
   constructor(
     @Inject('IRepository<Order>')
     private readonly orderRepository: IRepository<Order>,
-    @Inject('IService<Customer>')
-    private readonly customerService: CustomerService,
+    @Inject('IRepository<Customer>')
+    private readonly customerRepository: IRepository<Customer>,
   ) {}
   async create(orderDto: OrderDto): Promise<Order> {
-    const user = await this.customerService.findById(orderDto.customerId);
+    const user = await this.customerRepository.findById(orderDto.customerId);
 
     if (!user) {
       throw new Error('Customer not provided');

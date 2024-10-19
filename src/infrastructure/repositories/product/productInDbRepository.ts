@@ -4,7 +4,6 @@ import { IRepository } from '../iRepository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from './productEntity';
 import { Repository } from 'typeorm';
-import { CategoryEntity } from '../category';
 
 @Injectable()
 export class ProductInDbRepository implements IRepository<Product> {

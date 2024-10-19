@@ -1,15 +1,15 @@
 import { Inject, Logger } from '@nestjs/common';
 import { Order } from '../../../shared/models';
 import { IPaymentService } from './iPaymentService';
-import { OrderInDbRepository } from '../../../infrastructure/repositories/order';
 import { PaymentDto } from '../../../shared/models/payment';
 import { OrderStatusEnum, PaymentMethodEnum } from '../../../shared';
+import { IRepository } from '../../../infrastructure/repositories/iRepository';
 
 export class PaymentService implements IPaymentService {
   private logger: Logger = new Logger(PaymentService.name);
   constructor(
     @Inject('IRepository<Order>')
-    private readonly orderRepository: OrderInDbRepository,
+    private readonly orderRepository: IRepository<Order>,
   ) {}
 
   generateQrCodePaymentUrl(order: Order): Promise<string> {

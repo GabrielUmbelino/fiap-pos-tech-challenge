@@ -74,13 +74,11 @@ export class OrderController {
   @Post()
   async create(@Body() orderDto: OrderDto): Promise<Order> {
     const createdOrder = await this.orderService.create(orderDto);
-    this.logger.debug({ createdOrder });
     return createdOrder;
   }
 
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<void> {
     await this.orderService.delete(id);
-    this.logger.debug(`Deleted order with id: ${id}`);
   }
 }

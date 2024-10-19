@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IService } from '../../iService';
-import { Product, ProductDto } from '../../../shared/models';
+import { Category, Product, ProductDto } from '../../../shared/models';
 import { IRepository } from '../../../infrastructure/repositories/iRepository';
-import { CategoryEntity } from '../../../infrastructure/repositories/category';
 
 @Injectable()
 export class ProductService implements IService<Product> {
@@ -10,7 +9,7 @@ export class ProductService implements IService<Product> {
     @Inject('IRepository<Product>')
     private readonly productRepository: IRepository<Product>,
     @Inject('IRepository<Category>')
-    private categoryRepository: IRepository<CategoryEntity>,
+    private categoryRepository: IRepository<Category>,
   ) {}
 
   edit(product: Product): Promise<Product> {
