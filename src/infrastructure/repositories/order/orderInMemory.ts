@@ -23,7 +23,7 @@ export class OrderInMemory implements IRepository<Order> {
       if (filterOrderDto.id && order.id === filterOrderDto.id) return true;
       if (
         filterOrderDto.customerId &&
-        order.customer.id === filterOrderDto.customerId
+        order.user.id === filterOrderDto.customerId
       )
         return true;
       return false;

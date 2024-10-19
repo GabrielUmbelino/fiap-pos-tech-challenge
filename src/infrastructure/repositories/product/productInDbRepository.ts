@@ -2,10 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { FilterProductDto, Product } from '../../../shared/models/product';
 import { IRepository } from '../iRepository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductEntity } from './product.entity';
+import { ProductEntity } from './productEntity';
 import { Repository } from 'typeorm';
-import { Category } from '../../../shared/models';
-import { CategoryEntity } from '../category';
 
 @Injectable()
 export class ProductInDbRepository implements IRepository<Product> {
@@ -73,8 +71,7 @@ export class ProductInDbRepository implements IRepository<Product> {
       });
   }
 
-  async edit(product: Product): Promise<Product> {
-    console.log(product);
+  async edit(): Promise<Product> {
     throw new Error('Method not implemented.');
   }
 

@@ -8,6 +8,7 @@ import {
   OrderItemController,
 } from './controllers';
 import { DomainModule } from '../domain';
+import { PaymentController } from './controllers/paymentController';
 
 @Module({
   imports: [InfrastructureModule, DomainModule],
@@ -17,6 +18,7 @@ import { DomainModule } from '../domain';
     ProductController,
     OrderController,
     OrderItemController,
+    PaymentController,
   ],
 })
 export class ApplicationModule {}

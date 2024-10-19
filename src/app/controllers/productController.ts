@@ -29,13 +29,11 @@ export class ProductController {
 
   @Get()
   find(@Query() filterProductDto: FilterProductDto): Promise<Product[]> {
-    console.log('find all', filterProductDto);
     return this.productService.find(filterProductDto);
   }
 
   @Get(':id')
   findById(@Param('id') id?: number): Promise<Product> {
-    console.log('findById');
     return this.productService.findById(id);
   }
 

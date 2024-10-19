@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category, FilterCategoryDto } from '../../../shared/models';
-import { CategoryEntity } from './category.entity';
+import { CategoryEntity } from './categoryEntity';
 import { IRepository } from '../iRepository';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OrderItemEntity } from './orderItem.entity';
+import { OrderItemEntity } from './orderItemEntity';
 import { IRepository } from '../iRepository';
 import {
   FilterOrderItemDto,
@@ -20,8 +20,6 @@ export class OrderItemInDbRepository implements IRepository<OrderItem> {
   }
 
   createFromDto(orderItem: OrderItem, order: Order): Promise<OrderItem> {
-    console.log('create orderItem');
-
     return this.repository
       .save({
         order: order,

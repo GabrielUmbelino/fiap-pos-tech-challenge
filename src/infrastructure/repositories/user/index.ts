@@ -1,2 +1,2 @@
-export * from './user.entity';
+export * from './userEntity';
 export * from './userInDbRepository';

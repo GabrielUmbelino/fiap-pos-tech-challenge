@@ -16,8 +16,7 @@ export class MockOrderRepository implements IRepository<Order> {
   async find(orderDto: Order): Promise<Order[]> {
     const filteredOrders = this.orders.filter((order) => {
       if (orderDto.id && order.id === orderDto.id) return true;
-      if (orderDto.customer.id && order.customer.id === orderDto.customer.id)
-        return true;
+      if (orderDto.user.id && order.user.id === orderDto.user.id) return true;
       return false;
     });
 

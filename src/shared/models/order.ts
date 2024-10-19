@@ -2,6 +2,8 @@ import { randomInt } from 'crypto';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { OrderItemDto } from './orderItem';
 import { Customer } from './customer';
+import { OrderStatusEnum } from '../enums';
+import { User } from './user';
 
 export class OrderDto {
   @IsOptional()
@@ -32,15 +34,15 @@ export class FilterOrderDto {
 
 export class Order {
   id?: number;
-  status: 'new' | 'confirmed' | 'inProgress' | 'finished' | 'canceled';
+  status: OrderStatusEnum;
   totalPrice: string;
-  customer: Customer;
+  user: User;
   // items: OrderItem[];
 
-  constructor(orderDto: OrderDto, customer: Customer) {
+  constructor(orderDto: OrderDto, user: User) {
     this.id = orderDto?.id || randomInt(999);
     this.status = orderDto.status;
-    this.customer = customer;
+    this.user = user;
     // this.items = items;
   }
 }

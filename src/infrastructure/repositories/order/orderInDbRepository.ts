@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order, FilterOrderDto } from '../../../shared/models';
-import { OrderEntity } from './order.entity';
+import { OrderEntity } from './orderEntity';
 import { IRepository } from '../iRepository';
 
 @Injectable()
@@ -14,11 +14,10 @@ export class OrderInDbRepository implements IRepository<Order> {
 
   async create(order: Order): Promise<Order> {
     try {
-      console.log('create order');
       const createdOrder = await this.repository.save({
         status: order.status,
         totalPrice: order.totalPrice,
-        customer: order.customer,
+        user: order.user,
       });
 
       // const items = await this.orderItemRepository.find({
@@ -51,13 +50,12 @@ export class OrderInDbRepository implements IRepository<Order> {
       .createQueryBuilder('order')
       .getMany()
       .then((orderEntities) => {
-        console.log(orderEntities);
         return orderEntities.map((orderEntity) => ({
           id: orderEntity.id,
           status: orderEntity.status,
           totalPrice: orderEntity.totalPrice,
           items: orderEntity.items,
-          customer: orderEntity.customer,
+          user: orderEntity.user,
         }));
       })
       .catch((error) => {
@@ -85,7 +83,11 @@ export class OrderInDbRepository implements IRepository<Order> {
     throw new Error('Method not implemented.' + id);
   }
 
-  edit(): Promise<Order> {
-    throw new Error('Method not implemented.');
+  edit(order: Order): Promise<Order> {
+    return this.repository.save(order).catch((error) => {
+      throw new Error(
+        `There is been an error trying to edit the order: '${JSON.stringify(order)}' : ${error.message}`,
+      );
+    });
   }
 }

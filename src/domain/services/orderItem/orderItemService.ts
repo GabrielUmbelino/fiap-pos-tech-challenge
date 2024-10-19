@@ -29,7 +29,6 @@ export class OrderItemService implements IService<OrderItem> {
     const order = await this.orderService.findById({
       id: orderItemDto.orderId,
     });
-    console.log({ product, order });
 
     return this.orderItemRepository.createFromDto(
       {
@@ -47,19 +46,6 @@ export class OrderItemService implements IService<OrderItem> {
   find(filterOrderItemDto: FilterOrderItemDto): Promise<OrderItem[]> {
     return this.orderItemRepository.find(filterOrderItemDto);
   }
-
-  // async editFromDto(id, orderItemDto: OrderItemDto): Promise<OrderItem> {
-  //   const products = await this.productService.find({
-  //     id: orderItemDto.productId,
-  //   });
-  //   console.log(products);
-  //   const [product] = products;
-  //   return this.orderItemRepository.edit({
-  //     id,
-  //     quantity: orderItemDto.quantity,
-  //     product,
-  //   });
-  // }
 
   edit(): Promise<OrderItem> {
     throw new Error('Method not implemented.');

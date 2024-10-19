@@ -6,8 +6,9 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { CustomerEntity } from '../customer';
 import { OrderItemEntity } from '../orderItem';
+import { OrderStatusEnum } from '../../../shared';
+import { UserEntity } from '../user';
 
 @Entity({ name: 'Order' })
 export class OrderEntity {
@@ -15,14 +16,14 @@ export class OrderEntity {
   id: number;
 
   @Column({ name: 'status' })
-  status: 'new' | 'confirmed' | 'inProgress' | 'finished' | 'canceled';
+  status: OrderStatusEnum;
 
   @Column({ name: 'total_price' })
   totalPrice: string;
 
-  @ManyToOne(() => CustomerEntity)
+  @ManyToOne(() => UserEntity)
   @JoinColumn()
-  customer: CustomerEntity;
+  user: UserEntity;
 
   @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.order)
   items: OrderItemEntity[];

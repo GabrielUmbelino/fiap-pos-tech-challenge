@@ -9,6 +9,11 @@ export class ProductService implements IService<Product> {
     @Inject('IRepository<Product>')
     private readonly productRepository: ProductInDbRepository,
   ) {}
+
+  edit(product: Product): Promise<Product> {
+    throw new Error('Method not implemented. ' + JSON.stringify(product));
+  }
+
   findAll(): Promise<Product[]> {
     throw new Error('Method not implemented.');
   }
@@ -23,10 +28,6 @@ export class ProductService implements IService<Product> {
 
   findById(id: Product['id']): Promise<Product> {
     return this.productRepository.findById(id);
-  }
-
-  edit(productDto: Product): Promise<Product> {
-    return this.productRepository.edit(productDto);
   }
 
   delete(id: number): Promise<void> {

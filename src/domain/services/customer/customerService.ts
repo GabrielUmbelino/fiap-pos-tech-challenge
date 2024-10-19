@@ -6,7 +6,7 @@ import { UserInDbRepository } from '../../../infrastructure/repositories/user';
 import { User } from '../../../shared/models';
 
 @Injectable()
-export class CustomerService implements IService<Customer> {
+export class CustomerService implements IService<Customer | User> {
   constructor(
     @Inject('IRepository<Customer>')
     private readonly customerRepository: CustomerInDbRepository,
@@ -32,12 +32,12 @@ export class CustomerService implements IService<Customer> {
     });
   }
 
-  async findById(customerId: number): Promise<Customer> {
-    const customer = this.customerRepository.findById(customerId);
+  async findById(customerId: number): Promise<Customer | User> {
+    const [customer] = await this.customerRepository.findById(customerId);
     return customer;
   }
 
-  findAll(): Promise<Customer[]> {
+  findAll(): Promise<Array<Customer | User>> {
     return this.customerRepository.findAll();
   }
 
