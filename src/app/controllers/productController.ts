@@ -10,12 +10,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import {
-  Category,
-  FilterProductDto,
-  Product,
-  ProductDto,
-} from '../../shared/models';
+import { FilterProductDto, Product, ProductDto } from '../../shared/models';
 import { IService } from '../../domain/iService';
 
 @Controller('product')
@@ -23,7 +18,6 @@ export class ProductController {
   private readonly logger = new Logger(ProductController.name);
   constructor(
     @Inject('IService<Product>') private productService: IService<Product>,
-    @Inject('IService<Category>') private categoryService: IService<Category>,
   ) {}
 
   @Get()
