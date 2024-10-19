@@ -2,9 +2,9 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'Category' })
 export class CategoryEntity {
-  @PrimaryGeneratedColumn({ name: 'ID' })
+  @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
-  @Column({ name: 'NAME' })
+  @Column({ name: 'name' })
   name: string;
 }

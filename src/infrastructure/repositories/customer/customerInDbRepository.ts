@@ -15,19 +15,11 @@ export class CustomerInDbRepository implements IRepository<Customer> {
   create(customer: Customer): Promise<Customer> {
     return this.repository
       .save({
+        id: customer.id,
         name: customer.name,
         document: customer.document,
         phoneNumber: customer.phoneNumber,
         email: customer.email,
-      })
-      .then((customerEntity) => {
-        return new Customer({
-          id: customerEntity.id,
-          name: customerEntity.name,
-          document: customerEntity.document,
-          phoneNumber: customerEntity.phoneNumber,
-          email: customerEntity.email,
-        });
       })
       .catch((error) => {
         throw new Error(
@@ -35,22 +27,10 @@ export class CustomerInDbRepository implements IRepository<Customer> {
         );
       });
   }
-
   findAll(): Promise<Customer[]> {
     return this.repository
       .createQueryBuilder('customer')
       .getMany()
-      .then((customerEntities) => {
-        return customerEntities.map(
-          (customerEntity) =>
-            new Customer({
-              id: customerEntity.id,
-              name: customerEntity.name,
-              document: customerEntity.document,
-              phoneNumber: customerEntity.phoneNumber,
-            }),
-        );
-      })
       .catch((error) => {
         throw new Error(
           `An error occurred while searching the customer in the database: ${error.message}`,
@@ -62,14 +42,14 @@ export class CustomerInDbRepository implements IRepository<Customer> {
     throw new Error('Method not implemented.');
   }
 
-  findById(customerId: number): Promise<Customer> {
+  findById(id: number): Promise<Customer> {
     return this.repository
       .createQueryBuilder('customer')
-      .where('customer.id = :id', { id: customerId })
+      .where('customer.id = :id', { id })
       .getOne()
       .catch((error) => {
         throw new Error(
-          `An error occurred while searching the customer in the database: '${JSON.stringify(customerId)}': ${error.message}`,
+          `An error occurred while searching the customer in the database: '${JSON.stringify(id)}': ${error.message}`,
         );
       });
   }

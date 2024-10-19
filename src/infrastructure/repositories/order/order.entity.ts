@@ -4,22 +4,24 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { CustomerEntity } from '../customer';
 import { OrderItemEntity } from '../orderItem';
 
 @Entity({ name: 'Order' })
 export class OrderEntity {
-  @PrimaryGeneratedColumn({ name: 'ID' })
+  @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
-  @Column({ name: 'STATUS' })
+  @Column({ name: 'status' })
   status: 'new' | 'confirmed' | 'inProgress' | 'finished' | 'canceled';
 
-  @Column({ name: 'TOTAL_PRICE' })
+  @Column({ name: 'total_price' })
   totalPrice: string;
 
-  @ManyToOne(() => CustomerEntity, (customer) => customer, { cascade: true })
+  @ManyToOne(() => CustomerEntity)
+  @JoinColumn()
   customer: CustomerEntity;
 
   @OneToMany(() => OrderItemEntity, (orderItem) => orderItem.order)
