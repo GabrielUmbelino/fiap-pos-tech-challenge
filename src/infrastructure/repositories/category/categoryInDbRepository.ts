@@ -25,21 +25,11 @@ export class CategoryInDbRepository implements IRepository<Category> {
   }
 
   create(category: Category): Promise<Category> {
-    return this.repository
-      .save({
-        name: category.name,
-      })
-      .then((categoryEntity) => {
-        return new Category({
-          id: categoryEntity.id,
-          name: categoryEntity.name,
-        });
-      })
-      .catch((error) => {
-        throw new Error(
-          `An error occurred while saving the category to the database: '${JSON.stringify(category)}': ${error.message}`,
-        );
-      });
+    return this.repository.save(category).catch((error) => {
+      throw new Error(
+        `An error occurred while creating the category to the database: '${JSON.stringify(category)}': ${error.message}`,
+      );
+    });
   }
 
   findAll(): Promise<Category[]> {
@@ -73,11 +63,18 @@ export class CategoryInDbRepository implements IRepository<Category> {
       });
   }
 
-  delete(): Promise<void> {
-    throw new Error('Method not implemented.');
+  async delete(categoryId): Promise<void> {
+    await this.repository.delete(categoryId);
   }
 
-  edit(): Promise<Category> {
-    throw new Error('Method not implemented.');
+  edit(category): Promise<Category> {
+    return this.repository
+      .update(category.id, category)
+      .then(() => category)
+      .catch((error) => {
+        throw new Error(
+          `An error occurred while editing the category to the database: '${JSON.stringify(category)}': ${error.message}`,
+        );
+      });
   }
 }

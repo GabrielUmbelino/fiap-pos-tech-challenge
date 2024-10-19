@@ -10,8 +10,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { FilterProductDto, Product, ProductDto } from '../../shared/models';
 import { IService } from '../../domain/iService';
+import { FilterProductDto, Product, ProductDto } from '../../shared/models';
 
 @Controller('product')
 export class ProductController {
@@ -50,9 +50,9 @@ export class ProductController {
     return updatedProduct;
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: number): Promise<void> {
-    await this.productService.delete(id);
-    this.logger.debug(`Deleted product with id: ${id}`);
+  @Delete(':productId')
+  async delete(@Param('productId') productId: number): Promise<void> {
+    await this.productService.delete(productId);
+    this.logger.debug(`Deleted product with id: ${productId}`);
   }
 }
