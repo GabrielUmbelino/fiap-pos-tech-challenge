@@ -4,12 +4,16 @@ import { IRepository } from '../iRepository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from './productEntity';
 import { Repository } from 'typeorm';
+import { OrderItem } from '../../../shared';
+import { OrderItemEntity } from '../orderItem';
 
 @Injectable()
 export class ProductInDbRepository implements IRepository<Product> {
   constructor(
     @InjectRepository(ProductEntity)
-    private repository: Repository<ProductEntity>,
+    private repository: Repository<Product>,
+    @InjectRepository(OrderItemEntity)
+    private orderItemRepository: Repository<OrderItemEntity>,
   ) {}
 
   findAll(): Promise<Product[]> {
@@ -62,11 +66,51 @@ export class ProductInDbRepository implements IRepository<Product> {
       });
   }
 
-  async edit(): Promise<Product> {
-    throw new Error('Method not implemented.');
+  getOrderItemsByProductId(productId: number): Promise<OrderItem[]> {
+    return this.orderItemRepository
+      .createQueryBuilder('orderItem')
+      .leftJoinAndSelect('orderItem.product', 'product')
+      .where('orderItem.productId = :productId', {
+        productId,
+      })
+      .getMany()
+      .then((orderItemEntities) => {
+        console.log(orderItemEntities);
+        return orderItemEntities.map((orderItemEntity) => ({
+          id: orderItemEntity.id,
+          product: orderItemEntity.product,
+          quantity: orderItemEntity.quantity,
+          productPrice: orderItemEntity.productPrice,
+          order: orderItemEntity.order,
+        }));
+      })
+      .catch((error) => {
+        throw new Error(
+          `An error occurred while searching the orderItem in the database: '${JSON.stringify(productId)}': ${error.message}`,
+        );
+      });
   }
 
-  async delete(id: Product['id']): Promise<void> {
-    throw new Error('Method not implemented.' + id);
+  async edit(product: Product): Promise<Product> {
+    return this.repository
+      .update(product.id, product)
+      .then(() => product)
+      .catch((error) => {
+        throw new Error(
+          `An error occurred while saving the product to the database: '${JSON.stringify(product)}': ${error.message}`,
+        );
+      });
+  }
+
+  async delete(productId: number): Promise<void> {
+    const orderItemsFromProduct =
+      await this.getOrderItemsByProductId(productId);
+    if (orderItemsFromProduct?.length) {
+      throw Error(
+        `Can't delete this product because there are ${orderItemsFromProduct?.length} Order Items related to it.`,
+      );
+    }
+
+    await this.repository.delete(productId);
   }
 }

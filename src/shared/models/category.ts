@@ -16,7 +16,7 @@ export class FilterCategoryDto {
 }
 
 export class Category {
-  id: number;
+  id?: number;
   name: string;
 
   constructor(categoryDto: CategoryDto) {

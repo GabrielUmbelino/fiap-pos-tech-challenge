@@ -12,10 +12,6 @@ export class ProductService implements IService<Product> {
     private categoryRepository: IRepository<Category>,
   ) {}
 
-  edit(product: Product): Promise<Product> {
-    throw new Error('Method not implemented. ' + JSON.stringify(product));
-  }
-
   findAll(): Promise<Product[]> {
     throw new Error('Method not implemented.');
   }
@@ -37,6 +33,24 @@ export class ProductService implements IService<Product> {
     return this.productRepository.create(product);
   }
 
+  async edit(productDto: ProductDto): Promise<Product> {
+    const category = await this.categoryRepository.findById(
+      productDto.categoryId,
+    );
+    const product: Product = {
+      id: productDto.id,
+      name: productDto.name,
+      price: productDto.price,
+      status: productDto.status,
+      category,
+
+      // TODO: implement following fields
+      // descricao: produtoEntity.descricao,
+      // imagemBase64: produtoEntity.imagemBase64,
+    };
+    return this.productRepository.edit(product);
+  }
+
   find(categoryId: number): Promise<Product[]> {
     return this.productRepository.find(categoryId);
   }
@@ -45,7 +59,7 @@ export class ProductService implements IService<Product> {
     return this.productRepository.findById(id);
   }
 
-  delete(id: number): Promise<void> {
-    return this.productRepository.delete(id);
+  async delete(productId: number): Promise<void> {
+    return this.productRepository.delete(productId);
   }
 }
