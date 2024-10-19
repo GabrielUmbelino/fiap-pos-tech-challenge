@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { FilterProductDto, Product } from '../../../shared/models/product';
+import { Product } from '../../../shared/models/product';
 import { IRepository } from '../iRepository';
 
 @Injectable()
 export class ProductInMemoryRepository implements IRepository<Product> {
+  findById(): Promise<Product> {
+    throw new Error('Method not implemented.');
+  }
   private readonly products: Product[] = [];
 
   create(product: Product): Promise<Product> {
@@ -15,18 +18,9 @@ export class ProductInMemoryRepository implements IRepository<Product> {
     return Promise.resolve(this.products);
   }
 
-  find(filterProductDto: FilterProductDto): Promise<Product[]> {
+  find(categoryId: number): Promise<Product[]> {
     const filteredProducts = this.products.filter((product) => {
-      if (filterProductDto.id && product.id === filterProductDto.id)
-        return true;
-      if (filterProductDto.name && product.name === filterProductDto.name)
-        return true;
-      if (
-        filterProductDto.price !== undefined &&
-        product.price === filterProductDto.price
-      )
-        return true;
-      return false;
+      return product.category.id === categoryId;
     });
     return Promise.resolve(filteredProducts);
   }

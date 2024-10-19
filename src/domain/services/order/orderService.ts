@@ -1,24 +1,21 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Order, FilterOrderDto, OrderDto } from '../../../shared/models';
+import { Order, OrderDto } from '../../../shared/models';
 import { IService } from '../../iService';
 import { CustomerService } from '../customer';
-import { OrderInDbRepository } from '../../../infrastructure/repositories/order';
 import { OrderStatusEnum } from '../../../shared';
+import { IRepository } from '../../../infrastructure/repositories/iRepository';
 
 @Injectable()
 export class OrderService implements IService<Order> {
   constructor(
     @Inject('IRepository<Order>')
-    private readonly orderRepository: OrderInDbRepository,
+    private readonly orderRepository: IRepository<Order>,
     @Inject('IService<Customer>')
     private readonly customerService: CustomerService,
   ) {}
-  create(): Promise<Order> {
-    throw new Error('Method not implemented.');
-  }
-
-  async createFromDto(orderDto: OrderDto): Promise<Order> {
+  async create(orderDto: OrderDto): Promise<Order> {
     const user = await this.customerService.findById(orderDto.customerId);
+
     if (!user) {
       throw new Error('Customer not provided');
     }
@@ -27,6 +24,7 @@ export class OrderService implements IService<Order> {
       user,
       totalPrice: '0',
       status: OrderStatusEnum.NEW,
+      items: [],
     });
   }
 
@@ -34,16 +32,16 @@ export class OrderService implements IService<Order> {
     return this.orderRepository.findAll();
   }
 
-  find(order: FilterOrderDto): Promise<Order[]> {
-    return this.orderRepository.find(order);
+  find(orderId: number): Promise<Order[]> {
+    return this.orderRepository.find(orderId);
   }
 
-  findById(filterOrderDto: FilterOrderDto): Promise<Order> {
-    return this.orderRepository.findById(filterOrderDto);
+  findById(orderId: number): Promise<Order> {
+    return this.orderRepository.findById(orderId);
   }
 
-  edit(): Promise<Order> {
-    throw new Error('Method not implemented.');
+  edit(order: Order): Promise<Order> {
+    return this.orderRepository.edit(order);
   }
 
   delete(id: number): Promise<void> {

@@ -16,6 +16,6 @@ export class OrderItemEntity {
   @ManyToOne(() => ProductEntity, (product) => product, { cascade: true })
   product: ProductEntity;
 
-  @ManyToOne(() => OrderEntity, (order) => order.items, { cascade: true })
+  @ManyToOne(() => OrderEntity, (order) => order, { cascade: true })
   order: OrderEntity;
 }

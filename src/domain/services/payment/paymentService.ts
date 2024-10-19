@@ -22,14 +22,13 @@ export class PaymentService implements IPaymentService {
   }
 
   async payOrder(paymentDto: PaymentDto): Promise<string> {
-    const order = await this.orderRepository.findById({
-      id: paymentDto.orderId,
-    });
+    const orders = await this.orderRepository.find(paymentDto.orderId);
 
-    if (!order?.id) {
+    if (!orders?.length) {
       throw new Error(`Order Not Found`);
     }
 
+    const [order] = orders;
     if (order.status === OrderStatusEnum.CANCELED) {
       throw new Error(`Order has been cancelled.`);
     }

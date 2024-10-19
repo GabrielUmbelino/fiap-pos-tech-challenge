@@ -3,11 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderItemEntity } from './orderItemEntity';
 import { IRepository } from '../iRepository';
-import {
-  FilterOrderItemDto,
-  OrderItem,
-} from '../../../shared/models/orderItem';
-import { Order } from '../../../shared/models';
+import { OrderItem } from '../../../shared/models/orderItem';
 
 @Injectable()
 export class OrderItemInDbRepository implements IRepository<OrderItem> {
@@ -15,17 +11,13 @@ export class OrderItemInDbRepository implements IRepository<OrderItem> {
     @InjectRepository(OrderItemEntity)
     private repository: Repository<OrderItemEntity>,
   ) {}
-  create(): Promise<OrderItem> {
+  findById(): Promise<OrderItem> {
     throw new Error('Method not implemented.');
   }
 
-  createFromDto(orderItem: OrderItem, order: Order): Promise<OrderItem> {
+  create(orderItem: OrderItem): Promise<OrderItem> {
     return this.repository
-      .save({
-        order: order,
-        quantity: orderItem.quantity,
-        product: orderItem.product,
-      })
+      .save(orderItem)
       .then((orderItemEntity) => orderItemEntity)
       .catch((error) => {
         throw new Error(
@@ -38,19 +30,27 @@ export class OrderItemInDbRepository implements IRepository<OrderItem> {
     throw new Error('Method not implemented.');
   }
 
-  find(filterOrderItemDto: FilterOrderItemDto): Promise<OrderItem[]> {
+  find(orderId: number): Promise<OrderItem[]> {
     return this.repository
-      .findBy(filterOrderItemDto)
+      .createQueryBuilder('orderItem')
+      .leftJoinAndSelect('orderItem.product', 'product')
+      .where('orderItem.orderId = :orderId', {
+        orderId: orderId,
+      })
+      .getMany()
       .then((orderItemEntities) => {
+        console.log(orderItemEntities);
         return orderItemEntities.map((orderItemEntity) => ({
           id: orderItemEntity.id,
           product: orderItemEntity.product,
           quantity: orderItemEntity.quantity,
+          productPrice: orderItemEntity.productPrice,
+          order: orderItemEntity.order,
         }));
       })
       .catch((error) => {
         throw new Error(
-          `An error occurred while searching the orderItem in the database: '${JSON.stringify(filterOrderItemDto)}': ${error.message}`,
+          `An error occurred while searching the orderItem in the database: '${JSON.stringify(orderId)}': ${error.message}`,
         );
       });
   }

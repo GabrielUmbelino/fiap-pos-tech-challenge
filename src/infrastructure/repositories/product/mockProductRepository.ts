@@ -1,7 +1,10 @@
-import { Product, ProductDto } from '../../../shared/models';
+import { Product } from '../../../shared/models';
 import { IRepository } from '../../../infrastructure/repositories/iRepository';
 
 export class MockProductRepository implements IRepository<Product> {
+  findById(): Promise<Product> {
+    throw new Error('Method not implemented.');
+  }
   edit(): Promise<Product> {
     throw new Error('Method not implemented.');
   }
@@ -19,18 +22,9 @@ export class MockProductRepository implements IRepository<Product> {
     return Promise.resolve(this.products);
   }
 
-  async find(filterProductDto: ProductDto): Promise<Product[]> {
+  async find(categoryId: number): Promise<Product[]> {
     const filteredProducts = this.products.filter((product) => {
-      if (filterProductDto.id && product.id === filterProductDto.id)
-        return true;
-      if (filterProductDto.name && product.name === filterProductDto.name)
-        return true;
-      if (
-        filterProductDto.price !== undefined &&
-        product.price === filterProductDto.price
-      )
-        return true;
-      return false;
+      return product.category.id === categoryId;
     });
 
     return Promise.resolve(filteredProducts);

@@ -8,9 +8,8 @@ import {
   Param,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
-import { Category, CategoryDto, FilterCategoryDto } from '../../shared/models';
+import { Category, CategoryDto } from '../../shared/models';
 import { ApiQuery } from '@nestjs/swagger';
 import { IService } from '../../domain/iService';
 
@@ -36,17 +35,9 @@ export class CategoryController {
     type: String,
     required: false,
   })
-  @Get(':params')
-  find(
-    @Query('id') id?: number,
-    @Query('categoryName') name?: string,
-  ): Promise<Category[]> {
-    const filterCategoryDto: FilterCategoryDto = {
-      id,
-      name,
-    };
-
-    return this.categoryService.find(filterCategoryDto);
+  @Get(':id')
+  find(@Param('id') id?: number): Promise<Category[]> {
+    return this.categoryService.find(id);
   }
 
   @Post()

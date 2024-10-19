@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Product } from './product';
 import { randomInt } from 'crypto';
+import { Order } from './order';
 
 export class OrderItemDto {
   @IsOptional()
@@ -35,9 +36,9 @@ export class FilterOrderItemDto {
 
 export class OrderItem {
   id?: number;
+  order?: Order;
   quantity: number;
-  product: Product;
-
+  product?: Product;
   productPrice?: string;
 
   constructor(orderItemDto: OrderItemDto, product: Product) {

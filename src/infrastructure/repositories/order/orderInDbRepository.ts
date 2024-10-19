@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Order, FilterOrderDto } from '../../../shared/models';
+import { Order } from '../../../shared/models';
 import { OrderEntity } from './orderEntity';
 import { IRepository } from '../iRepository';
 
@@ -19,10 +19,6 @@ export class OrderInDbRepository implements IRepository<Order> {
         totalPrice: order.totalPrice,
         user: order.user,
       });
-
-      // const items = await this.orderItemRepository.find({
-      //   orderId: createdOrder.id,
-      // });
       return createdOrder;
     } catch (error) {
       throw new Error(
@@ -31,11 +27,11 @@ export class OrderInDbRepository implements IRepository<Order> {
     }
   }
 
-  find(order: FilterOrderDto): Promise<Order[]> {
+  find(orderId: number): Promise<Order[]> {
     return this.repository
       .createQueryBuilder('order')
-      .where('order.orderId = :orderId', {
-        orderDto: order.id,
+      .where('order.id = :orderId', {
+        orderId: orderId,
       })
       .getMany()
       .catch((error) => {
@@ -65,11 +61,11 @@ export class OrderInDbRepository implements IRepository<Order> {
       });
   }
 
-  findById(filterOrderDto: FilterOrderDto): Promise<Order> {
+  findById(id: number): Promise<Order> {
     return this.repository
       .createQueryBuilder('order')
       .where('order.id = :orderId', {
-        orderId: filterOrderDto.id,
+        orderId: id,
       })
       .getOne()
       .catch((error) => {
@@ -83,11 +79,15 @@ export class OrderInDbRepository implements IRepository<Order> {
     throw new Error('Method not implemented.' + id);
   }
 
-  edit(order: Order): Promise<Order> {
-    return this.repository.save(order).catch((error) => {
+  async edit(order: Order): Promise<Order> {
+    try {
+      const updatedOrder = await this.repository.save(order);
+
+      return updatedOrder;
+    } catch (error) {
       throw new Error(
-        `There is been an error trying to edit the order: '${JSON.stringify(order)}' : ${error.message}`,
+        `An error occurred while saving the order to the database: '${JSON.stringify(order)}': ${error.message}`,
       );
-    });
+    }
   }
 }

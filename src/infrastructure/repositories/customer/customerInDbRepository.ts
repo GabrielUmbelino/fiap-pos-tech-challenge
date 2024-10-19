@@ -14,6 +14,9 @@ export class CustomerInDbRepository implements IRepository<Customer | User> {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
   ) {}
+  findById(): Promise<Customer | User> {
+    throw new Error('Method not implemented.');
+  }
 
   create(customer: Customer): Promise<Customer> {
     return this.repository
@@ -65,11 +68,7 @@ export class CustomerInDbRepository implements IRepository<Customer | User> {
       });
   }
 
-  find(): Promise<Customer[]> {
-    throw new Error('Method not implemented.');
-  }
-
-  findById(id: number): Promise<Array<Customer | User>> {
+  find(id: number): Promise<Array<Customer | User>> {
     return this.userRepository
       .query(
         `
