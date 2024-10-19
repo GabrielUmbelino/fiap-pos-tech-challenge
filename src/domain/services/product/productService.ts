@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Product, ProductDto } from '../../../shared/models';
 import { IService } from '../../iService';
+import { Product, ProductDto } from '../../../shared/models';
 import { IRepository } from '../../../infrastructure/repositories/iRepository';
 import { CategoryEntity } from '../../../infrastructure/repositories/category';
 

@@ -1,3 +1,4 @@
+import { OrderStatusEnum } from './../../shared/enums/OrderStatusEnum';
 import {
   Body,
   Controller,
@@ -7,6 +8,7 @@ import {
   Logger,
   Param,
   Post,
+  Put,
 } from '@nestjs/common';
 import { ApiQuery } from '@nestjs/swagger';
 import { IService } from '../../domain/iService';
@@ -47,6 +49,26 @@ export class OrderController {
   @Get(':id')
   findById(@Param('id') id?: number): Promise<Order> {
     return this.orderService.findById(id);
+  }
+
+  @Put('/confirm/:id')
+  confirmOrder(@Param('id') id?: number): Promise<Order> {
+    return this.orderService.edit({ id, status: OrderStatusEnum.CONFIRMED });
+  }
+
+  @Put('/in-progress/:id')
+  orderInProgres(@Param('id') id?: number): Promise<Order> {
+    return this.orderService.edit({ id, status: OrderStatusEnum.IN_PROGRESS });
+  }
+
+  @Put('/finish/:id')
+  finishOrder(@Param('id') id?: number): Promise<Order> {
+    return this.orderService.edit({ id, status: OrderStatusEnum.FINISHED });
+  }
+
+  @Put('/cancel/:id')
+  cancelOrder(@Param('id') id?: number): Promise<Order> {
+    return this.orderService.edit({ id, status: OrderStatusEnum.CANCELED });
   }
 
   @Post()

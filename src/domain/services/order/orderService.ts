@@ -40,8 +40,13 @@ export class OrderService implements IService<Order> {
     return this.orderRepository.findById(orderId);
   }
 
-  edit(order: Order): Promise<Order> {
-    return this.orderRepository.edit(order);
+  async edit(orderDto: OrderDto): Promise<Order> {
+    const order = await this.orderRepository.findById(orderDto.id);
+
+    return this.orderRepository.edit({
+      ...order,
+      status: orderDto.status,
+    });
   }
 
   delete(id: number): Promise<void> {
