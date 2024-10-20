@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IRepository } from '../../../infrastructure/repositories/iRepository';
-import { Category, FilterCategoryDto } from '../../../shared/models';
+import { Category, CategoryDto, Product } from '../../../shared/models';
 import { IService } from '../../iService';
 
 @Injectable()
@@ -8,9 +8,17 @@ export class CategoryService implements IService<Category> {
   constructor(
     @Inject('IRepository<Category>')
     private readonly categoryRepository: IRepository<Category>,
+    @Inject('IRepository<Product>')
+    private readonly productRepository: IRepository<Product>,
   ) {}
+  findById(): Promise<Category> {
+    throw new Error('Method not implemented.');
+  }
 
-  create(category: Category): Promise<Category> {
+  create(categoryDto: CategoryDto): Promise<Category> {
+    const category: Category = {
+      name: categoryDto.name,
+    };
     return this.categoryRepository.create(category);
   }
 
@@ -18,15 +26,26 @@ export class CategoryService implements IService<Category> {
     return this.categoryRepository.findAll();
   }
 
-  find(filterCategoryDto: FilterCategoryDto): Promise<Category[]> {
-    return this.categoryRepository.find(filterCategoryDto);
+  find(id: number): Promise<Category[]> {
+    return this.categoryRepository.find(id);
   }
 
-  edit(category: Category): Promise<Category> {
+  edit(categoryDto: CategoryDto): Promise<Category> {
+    const category: Category = {
+      id: categoryDto.id,
+      name: categoryDto.name,
+    };
     return this.categoryRepository.edit(category);
   }
 
-  delete(id: number): Promise<void> {
-    return this.categoryRepository.delete(id);
+  async delete(categoryId: number): Promise<void> {
+    const productsFromCategory = await this.productRepository.find(categoryId);
+    if (productsFromCategory?.length) {
+      throw Error(
+        `Can't delete this category because there are ${productsFromCategory?.length} related to it.`,
+      );
+    }
+
+    return this.categoryRepository.delete(categoryId);
   }
 }

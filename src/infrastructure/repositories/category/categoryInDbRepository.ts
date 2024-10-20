@@ -1,8 +1,8 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category, FilterCategoryDto } from '../../../shared/models';
-import { CategoryEntity } from './category.entity';
+import { Category } from '../../../shared/models';
+import { CategoryEntity } from './categoryEntity';
 import { IRepository } from '../iRepository';
 
 @Injectable()
@@ -12,22 +12,24 @@ export class CategoryInDbRepository implements IRepository<Category> {
     private repository: Repository<CategoryEntity>,
   ) {}
 
-  create(category: Category): Promise<Category> {
+  findById(id: number): Promise<Category> {
     return this.repository
-      .save({
-        name: category.name,
-      })
-      .then((categoryEntity) => {
-        return new Category({
-          id: categoryEntity.id,
-          name: categoryEntity.name,
-        });
-      })
+      .createQueryBuilder('category')
+      .where('category.id = :id', { id: id })
+      .getOne()
       .catch((error) => {
         throw new Error(
-          `An error occurred while saving the category to the database: '${JSON.stringify(category)}': ${error.message}`,
+          `An error occurred while searching the category in the database: '${JSON.stringify(id)}': ${error.message}`,
         );
       });
+  }
+
+  create(category: Category): Promise<Category> {
+    return this.repository.save(category).catch((error) => {
+      throw new Error(
+        `An error occurred while creating the category to the database: '${JSON.stringify(category)}': ${error.message}`,
+      );
+    });
   }
 
   findAll(): Promise<Category[]> {
@@ -49,32 +51,30 @@ export class CategoryInDbRepository implements IRepository<Category> {
       });
   }
 
-  find(categoryDto: FilterCategoryDto): Promise<Category[]> {
+  find(id: number): Promise<Category[]> {
     return this.repository
       .createQueryBuilder('category')
-      .where('category.id = :id', { id: categoryDto.id })
+      .where('category.id = :id', { id: id })
       .getMany()
-      .then((categoryEntities) => {
-        return categoryEntities.map(
-          (categoryEntity) =>
-            new Category({
-              id: categoryEntity.id,
-              name: categoryEntity.name,
-            }),
-        );
-      })
       .catch((error) => {
         throw new Error(
-          `An error occurred while searching the category in the database: '${JSON.stringify(categoryDto)}': ${error.message}`,
+          `An error occurred while searching the category in the database: '${JSON.stringify(id)}': ${error.message}`,
         );
       });
   }
 
-  delete(): Promise<void> {
-    throw new Error('Method not implemented.');
+  async delete(categoryId): Promise<void> {
+    await this.repository.delete(categoryId);
   }
 
-  edit(): Promise<Category> {
-    throw new Error('Method not implemented.');
+  edit(category): Promise<Category> {
+    return this.repository
+      .update(category.id, category)
+      .then(() => category)
+      .catch((error) => {
+        throw new Error(
+          `An error occurred while editing the category to the database: '${JSON.stringify(category)}': ${error.message}`,
+        );
+      });
   }
 }

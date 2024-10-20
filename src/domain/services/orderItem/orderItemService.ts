@@ -1,71 +1,74 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { OrderService } from '../order/orderService';
-import { IService } from '../../iService';
 import {
-  FilterOrderItemDto,
   OrderItemDto,
   OrderItem,
+  Order,
+  Product,
 } from '../../../shared/models';
-import { OrderItemInDbRepository } from '../../../infrastructure/repositories/orderItem';
-import { ProductService } from '../product';
+import { IService } from '../../iService';
+import { IRepository } from '../../../infrastructure/repositories/iRepository';
 
 @Injectable()
 export class OrderItemService implements IService<OrderItem> {
   constructor(
     @Inject('IRepository<OrderItem>')
-    private readonly orderItemRepository: OrderItemInDbRepository,
-    @Inject('IService<Product>')
-    private readonly productService: ProductService,
-    @Inject('IService<Order>')
-    private readonly orderService: OrderService,
+    private readonly orderItemRepository: IRepository<OrderItem>,
+    @Inject('IRepository<Order>')
+    private readonly orderRepository: IRepository<Order>,
+    @Inject('IRepository<Product>')
+    private readonly productRepository: IRepository<Product>,
   ) {}
-
-  create(): Promise<OrderItem> {
+  findById(): Promise<OrderItem> {
     throw new Error('Method not implemented.');
   }
 
-  async createFromDto(orderItemDto: OrderItemDto): Promise<OrderItem> {
-    const product = await this.productService.findById(orderItemDto.productId);
-    const order = await this.orderService.findById({
-      id: orderItemDto.orderId,
-    });
-    console.log({ product, order });
-
-    return this.orderItemRepository.createFromDto(
-      {
-        product,
-        quantity: orderItemDto.quantity,
-      },
-      order,
+  async create(orderItemDto: OrderItemDto): Promise<OrderItem> {
+    const product = await this.productRepository.findById(
+      orderItemDto.productId,
     );
+    const order = await this.orderRepository.findById(orderItemDto.orderId);
+    console.log('findById ORDEEEEER', order);
+    const createdOrderItem = await this.orderItemRepository.create({
+      order,
+      product,
+      productPrice: product.price,
+      quantity: orderItemDto.quantity,
+    });
+
+    const orderItems = await this.orderItemRepository.find(
+      orderItemDto.orderId,
+    );
+
+    const totalPrice = orderItems.reduce((sum, current) => {
+      return Number(current.productPrice) + Number(sum);
+    }, 0);
+
+    await this.orderRepository.edit({
+      ...order,
+      totalPrice: `${totalPrice}`,
+    });
+    return createdOrderItem;
   }
 
   findAll(): Promise<OrderItem[]> {
     return this.orderItemRepository.findAll();
   }
 
-  find(filterOrderItemDto: FilterOrderItemDto): Promise<OrderItem[]> {
-    return this.orderItemRepository.find(filterOrderItemDto);
+  findByOrderId(orderId: number): Promise<OrderItem[]> {
+    return this.orderItemRepository.find(orderId);
   }
 
-  // async editFromDto(id, orderItemDto: OrderItemDto): Promise<OrderItem> {
-  //   const products = await this.productService.find({
-  //     id: orderItemDto.productId,
-  //   });
-  //   console.log(products);
-  //   const [product] = products;
-  //   return this.orderItemRepository.edit({
-  //     id,
-  //     quantity: orderItemDto.quantity,
-  //     product,
-  //   });
-  // }
-
-  edit(): Promise<OrderItem> {
+  find(): Promise<OrderItem[]> {
     throw new Error('Method not implemented.');
   }
 
+  edit(orderDto: OrderItemDto): Promise<OrderItem> {
+    // TODO: update order price after updating item
+    throw new Error('Method not implemented.' + JSON.stringify(orderDto));
+  }
+
   delete(id: number): Promise<void> {
+    // TODO: update order price after deleting item
     return this.orderItemRepository.delete(id);
   }
 }

@@ -4,8 +4,8 @@ import {
   Get,
   Inject,
   Logger,
+  Param,
   Post,
-  Query,
 } from '@nestjs/common';
 
 import { ApiQuery } from '@nestjs/swagger';
@@ -21,7 +21,7 @@ export class CustomerController {
   ) {}
 
   @Get()
-  findAll(): Promise<Array<Customer>> {
+  findAll(): Promise<Array<Customer | User>> {
     return this.customerService.findAll();
   }
 
@@ -45,8 +45,8 @@ export class CustomerController {
     type: String,
     required: false,
   })
-  @Get(':params')
-  find(@Query('id') id?: number): Promise<Customer> {
+  @Get(':id')
+  find(@Param('id') id: number): Promise<Customer | User> {
     return this.customerService.findById(id);
   }
 

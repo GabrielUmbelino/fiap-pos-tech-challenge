@@ -8,11 +8,10 @@ import {
   Param,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
-import { Category, CategoryDto, FilterCategoryDto } from '../../shared/models';
 import { ApiQuery } from '@nestjs/swagger';
 import { IService } from '../../domain/iService';
+import { Category, CategoryDto } from '../../shared/models';
 
 @Controller('category')
 export class CategoryController {
@@ -36,39 +35,34 @@ export class CategoryController {
     type: String,
     required: false,
   })
-  @Get(':params')
-  find(
-    @Query('id') id?: number,
-    @Query('categoryName') name?: string,
-  ): Promise<Category[]> {
-    const filterCategoryDto: FilterCategoryDto = {
-      id,
-      name,
-    };
-
-    return this.categoryService.find(filterCategoryDto);
+  @Get(':id')
+  find(@Param('id') id?: number): Promise<Category[]> {
+    return this.categoryService.find(id);
   }
 
   @Post()
   async create(@Body() categoryDto: CategoryDto): Promise<Category> {
-    const category = await this.categoryService.create(categoryDto as Category);
-    this.logger.debug(categoryDto);
-    this.logger.debug({ category });
+    const category = await this.categoryService.create(categoryDto);
+    this.logger.debug(`Created category: ${JSON.stringify(category)}`);
     return category;
   }
 
   @Put(':id')
-  async edit(@Body() categoryDto: CategoryDto): Promise<Category> {
-    const updatedCategory = await this.categoryService.edit(
-      categoryDto as Category,
-    );
+  async edit(
+    @Param('id') id,
+    @Body() categoryDto: CategoryDto,
+  ): Promise<Category> {
+    const updatedCategory = await this.categoryService.edit({
+      ...categoryDto,
+      id,
+    });
     this.logger.debug(`Updated category: ${JSON.stringify(updatedCategory)}`);
     return updatedCategory;
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: number): Promise<void> {
-    await this.categoryService.delete(id);
-    this.logger.debug(`Deleted category with id: ${id}`);
+  @Delete(':categoryId')
+  async delete(@Param('categoryId') categoryId: number): Promise<void> {
+    await this.categoryService.delete(categoryId);
+    this.logger.debug(`Deleted category with id: ${categoryId}`);
   }
 }

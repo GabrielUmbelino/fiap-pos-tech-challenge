@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { ProductStatusEnum } from '../../../shared';
 import { CategoryEntity } from '../category';
 
 @Entity({ name: 'Product' })
@@ -18,7 +19,7 @@ export class ProductEntity {
   price: string;
 
   @Column({ name: 'status' })
-  status: 'available' | 'draft' | 'outOfStock' | 'deleted';
+  status: ProductStatusEnum;
 
   @Column({ name: 'description', nullable: true })
   description: string;

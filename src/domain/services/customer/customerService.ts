@@ -1,17 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Customer, CustomerDto } from '../../../shared/models/customer';
 import { IService } from '../../iService';
-import { CustomerInDbRepository } from '../../../infrastructure/repositories/customer';
-import { UserInDbRepository } from '../../../infrastructure/repositories/user';
 import { User } from '../../../shared/models';
+import { IRepository } from '../../../infrastructure/repositories/iRepository';
 
 @Injectable()
-export class CustomerService implements IService<Customer> {
+export class CustomerService implements IService<Customer | User> {
   constructor(
     @Inject('IRepository<Customer>')
-    private readonly customerRepository: CustomerInDbRepository,
+    private readonly customerRepository: IRepository<Customer>,
     @Inject('IRepository<User>')
-    private readonly userRepository: UserInDbRepository,
+    private readonly userRepository: IRepository<User>,
   ) {}
   create(): Promise<Customer> {
     throw new Error('Method not implemented.');
@@ -20,7 +19,7 @@ export class CustomerService implements IService<Customer> {
   async createUserAndCustomer(
     customerDto: CustomerDto,
   ): Promise<Customer | User> {
-    const user = await this.userRepository.create();
+    const user = await this.userRepository.create({});
     if (!customerDto?.document?.length) return user;
 
     return this.customerRepository.create({
@@ -32,12 +31,11 @@ export class CustomerService implements IService<Customer> {
     });
   }
 
-  async findById(customerId: number): Promise<Customer> {
-    const customer = this.customerRepository.findById(customerId);
-    return customer;
+  async findById(customerId: number): Promise<Customer | User> {
+    return this.customerRepository.findById(customerId);
   }
 
-  findAll(): Promise<Customer[]> {
+  findAll(): Promise<Array<Customer | User>> {
     return this.customerRepository.findAll();
   }
 
