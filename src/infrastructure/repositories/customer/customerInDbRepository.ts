@@ -14,8 +14,39 @@ export class CustomerInDbRepository implements IRepository<Customer | User> {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
   ) {}
-  findById(): Promise<Customer | User> {
-    throw new Error('Method not implemented.');
+  findById(id: number): Promise<Customer | User> {
+    return this.userRepository
+      .query(
+        `
+      SELECT
+        "u"."id",
+        "c"."name",
+        "c"."document",
+        "c"."phone_number",
+        "c"."email"
+      FROM
+        "User" "u"
+        LEFT JOIN "Customer" "c" ON "c"."id" = "u"."id"
+      WHERE
+        "u"."id" = ${id}
+      `,
+      )
+      .then(([customer]) => {
+        if (!customer.name) return { id: customer.id };
+
+        return {
+          id: customer.id,
+          name: customer.name,
+          document: customer.document,
+          phoneNumber: customer.phoneNumber,
+          email: customer.email,
+        };
+      })
+      .catch((error) => {
+        throw new Error(
+          `An error occurred while searching the customer in the database: ${error.message}`,
+        );
+      });
   }
 
   create(customer: Customer): Promise<Customer> {
