@@ -27,7 +27,6 @@ export class OrderItemService implements IService<OrderItem> {
       orderItemDto.productId,
     );
     const order = await this.orderRepository.findById(orderItemDto.orderId);
-    console.log('findById ORDEEEEER', order);
     const createdOrderItem = await this.orderItemRepository.create({
       order,
       product,
@@ -39,10 +38,14 @@ export class OrderItemService implements IService<OrderItem> {
       orderItemDto.orderId,
     );
 
+    console.log(
+      'orderItemsPrices',
+      orderItems.map((item) => item.productPrice),
+    );
     const totalPrice = orderItems.reduce((sum, current) => {
-      return Number(current.productPrice) + Number(sum);
+      return Number(sum) + Number(current.productPrice) * current.quantity;
     }, 0);
-
+    console.log('totalPrice', totalPrice);
     await this.orderRepository.edit({
       ...order,
       totalPrice: `${totalPrice}`,
